@@ -1,2 +1,1 @@
-# GuardianX
-System kar i strażnik serwera
+# GuardianX (Project in progress)
