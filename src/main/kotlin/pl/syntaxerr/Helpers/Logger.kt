@@ -55,9 +55,10 @@ class Logger(private val fullName: String?, private val serverVersion: String?, 
         clear("&6           __/ |                                                             ")
         clear("&6          |___/                                                              ")
         clear("&6                                                                             ")
-        clear("&6    ... is proud to present and enabled                                      ")
-        clear("&a         &l$fullName&6, running on Paper and utilizing its optimizations       ")
+        clear("&6    ... is proud to present and enabled &l$fullName&6,                       ")
+        clear("&6                   running on Paper and utilizing its optimizations!         ")
         clear("")
-
+        clear("&a    Join our Discord! &lhttps://discord.gg/Zk6mxv7eMh")
+        clear("")
     }
 }
