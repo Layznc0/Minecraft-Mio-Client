@@ -1,0 +1,21 @@
+# Ustawienia niezbędnyhc informacji do łaczenia z bazą danych
+database:
+  # Dostępne opcje: mariadb, mysql, sqlite, postgresql //TODO: dodać obsługę H2 lub YAML
+  type: "sqlite"
+  # Dane do łączenia się z bazą dla MariaDB/MySQL/PostgreSQL
+  sql:
+    host: "localhost"
+    port: 3306
+    name: "my_database"
+    username: "user"
+    password: "password"
+
+# Ustawienia sprawdzania i automatycznej aktualizacji
+checkForUpdates: true
+autoDownloadUpdates: false
+# Tryb debugowania ustawiony na true daje więcej opisów działań w konsoli
+debug: false
+
+# Czy bStats powinien być włączony?
+bStats:
+  enabled: true
