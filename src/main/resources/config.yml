@@ -9,6 +9,8 @@ database:
     dbname: "my_database"
     username: "user"
     password: "password"
+# Wy6bór języka pluginu. Możliwe wartości: "PL", "EN"
+language: "PL"
 
 # Ustawienia sprawdzania i automatycznej aktualizacji
 checkForUpdates: true
