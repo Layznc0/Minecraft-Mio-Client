@@ -18,7 +18,7 @@ class GuardianX : JavaPlugin(), Listener {
     private val pluginMetas = this.pluginMeta
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
-    private lateinit var databaseHandler: MySQLDatabaseHandler
+    lateinit var databaseHandler: MySQLDatabaseHandler
 
     override fun onEnable() {
         saveDefaultConfig()
