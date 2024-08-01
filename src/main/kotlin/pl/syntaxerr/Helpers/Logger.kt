@@ -1,4 +1,4 @@
-package pl.syntaxerr.Helpers
+package pl.syntaxerr.helpers
 
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -46,19 +46,19 @@ class Logger(private val fullName: String?, private val serverVersion: String?, 
 
     fun pluginStart() {
         clear("")
-        clear("&6    _____             _             _____          _______                   ")
-        clear("&6   / ____|           | |           |  __ \\        |__   __|                  ")
-        clear("&6  | (___  _   _ _ __ | |_ __ ___  _| |  | | _____   _| | ___  __ _ _ __ ___  ")
-        clear("&6   \\___ \\| | | | '_ \\| __/ _` \\ \\/ / |  | |/ _ \\ \\ / / |/ _ \\/ _` | '_ ` _ \\ ")
-        clear("&6   ____) | |_| | | | | || (_| |>  <| |__| |  __/\\ V /| |  __/ (_| | | | | | |")
-        clear("&6  |_____/ \\__, |_| |_|\\__\\__,_/_/\\_\\_____/ \\___| \\_/ |_|\\___|\\__,_|_| |_| |_|")
-        clear("&6           __/ |                                                             ")
-        clear("&6          |___/                                                              ")
-        clear("&6                                                                             ")
-        clear("&6    ... is proud to present and enabled &l$fullName&6,                       ")
-        clear("&6                   running on Paper and utilizing its optimizations!         ")
+        clear("&9    _____             _             _____          _______                   ")
+        clear("&9   / ____|           | |           |  __ \\        |__   __|                  ")
+        clear("&9  | (___  _   _ _ __ | |_ __ ___  _| |  | | _____   _| | ___  __ _ _ __ ___  ")
+        clear("&9   \\___ \\| | | | '_ \\| __/ _` \\ \\/ / |  | |/ _ \\ \\ / / |/ _ \\/ _` | '_ ` _ \\ ")
+        clear("&9   ____) | |_| | | | | || (_| |>  <| |__| |  __/\\ V /| |  __/ (_| | | | | | |")
+        clear("&9  |_____/ \\__, |_| |_|\\__\\__,_/_/\\_\\_____/ \\___| \\_/ |_|\\___|\\__,_|_| |_| |_|")
+        clear("&9           __/ |                                                             ")
+        clear("&9          |___/                                                              ")
+        clear("&9                                                                             ")
+        clear("&9    ... is proud to present and enabled &f&l$fullName&9,                       ")
+        clear("&9                   running on Paper and utilizing its optimizations!         ")
         clear("")
-        clear("&a    Join our Discord! &lhttps://discord.gg/Zk6mxv7eMh")
+        clear("&a    Join our Discord! &9&lhttps://discord.gg/Zk6mxv7eMh")
         clear("")
     }
 }

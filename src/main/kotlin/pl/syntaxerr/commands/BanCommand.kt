@@ -6,14 +6,16 @@ import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.NotNull
 import pl.syntaxerr.GuardianX
-import pl.syntaxerr.Helpers.Logger
+import pl.syntaxerr.helpers.Logger
+import pl.syntaxerr.helpers.UUIDManager
 
 @Suppress("UnstableApiUsage")
-class BanCommand(private val plugin: GuardianX, private val pluginMetas: PluginMeta) : BasicCommand {
+class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : BasicCommand {
 
-    private var config = plugin.getConfig()
+    private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
     private val logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
+    private val uuidManager = UUIDManager()
 
     override fun execute(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>) {
         if (args.isNotEmpty()) {
@@ -22,23 +24,26 @@ class BanCommand(private val plugin: GuardianX, private val pluginMetas: PluginM
                     stack.sender.sendRichMessage("<red>Poprawne użycie to: <yellow>/ban <player> (czas) <powód>")
                 } else {
                     val player = args[0]
+                    val uuid = uuidManager.getUUID(player)
+                    if (uuid == null) {
+                        stack.sender.sendRichMessage("<red>Nie znaleziono gracza o nicku $player.</red>")
+                        return
+                    }
+
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
+
                     val punishmentType = "BAN"
                     val start = System.currentTimeMillis().toString()
                     val end = if (gtime != null) (System.currentTimeMillis() + parseTime(gtime) * 1000).toString() else "nieokreślony"
 
-                    plugin.databaseHandler.addPunishment(player, player, reason, stack.sender.name, punishmentType, start, end)
-                    plugin.databaseHandler.addPunishmentHistory(player, player, reason, stack.sender.name, punishmentType, start, end)
-
-                    // TODO:
-                    //  * przenieść komunikaty do pliku językowego
-                    //  * utworzyć klase dla plików językowych
+                    plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
+                    plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
 
                     stack.sender.sendRichMessage("Zbanowałeś " + player + " za " + reason + " na czas " + formatTime(gtime))
                     val message = Component.text("Gracz " + player + " został zbanowany za " + reason + " na czas " + formatTime(gtime))
                     plugin.server.broadcast(message)
-                    logger.info("Gracz " + player + " został zbanowany za " + reason + " na czas " + formatTime(gtime))
+                    logger.info("Gracz " + player + "(" + uuid + ") został zbanowany za " + reason + " na czas " + formatTime(gtime))
                 }
             } else {
                 stack.sender.sendRichMessage("<red>Nie masz uprawnień do tej komendy.</red>")
@@ -48,7 +53,7 @@ class BanCommand(private val plugin: GuardianX, private val pluginMetas: PluginM
         }
     }
 
-    fun parseTime(time: String): Long {
+    private fun parseTime(time: String): Long {
         val amount = time.substring(0, time.length - 1).toLong()
         val unit = time.last()
 

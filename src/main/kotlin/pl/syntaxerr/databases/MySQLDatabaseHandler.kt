@@ -1,6 +1,6 @@
 package pl.syntaxerr.databases
 
-import pl.syntaxerr.Helpers.Logger
+import pl.syntaxerr.helpers.Logger
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
@@ -38,7 +38,7 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
                 CREATE TABLE IF NOT EXISTS `punishments` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(32) DEFAULT NULL,
-                  `uuid` varchar(35) DEFAULT NULL,
+                  `uuid` varchar(36) DEFAULT NULL,
                   `reason` varchar(255) DEFAULT NULL,
                   `operator` varchar(16) DEFAULT NULL,
                   `punishmentType` varchar(16) DEFAULT NULL,
@@ -52,7 +52,7 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
                 CREATE TABLE IF NOT EXISTS `punishmenthistory` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(32) DEFAULT NULL,
-                  `uuid` varchar(35) DEFAULT NULL,
+                  `uuid` varchar(36) DEFAULT NULL,
                   `reason` varchar(255) DEFAULT NULL,
                   `operator` varchar(16) DEFAULT NULL,
                   `punishmentType` varchar(16) DEFAULT NULL,

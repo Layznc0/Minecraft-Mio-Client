@@ -7,7 +7,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import pl.syntaxerr.Helpers.Logger
+import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.commands.BanCommand
 import pl.syntaxerr.commands.GuardianXCommands
 import pl.syntaxerr.databases.MySQLDatabaseHandler
