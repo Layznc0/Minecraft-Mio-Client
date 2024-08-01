@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pl.syntaxerr.Helpers.Logger
 import pl.syntaxerr.commands.BanCommand
 import pl.syntaxerr.commands.GuardianXCommands
+import pl.syntaxerr.databases.MySQLDatabaseHandler
 
 @Suppress("UnstableApiUsage")
 class GuardianX : JavaPlugin(), Listener {
@@ -17,10 +18,16 @@ class GuardianX : JavaPlugin(), Listener {
     private val pluginMetas = this.pluginMeta
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
+    private lateinit var databaseHandler: MySQLDatabaseHandler
 
     override fun onEnable() {
-        logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
         saveDefaultConfig()
+        logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
+
+        databaseHandler = MySQLDatabaseHandler(config, logger)
+        databaseHandler.openConnection()
+        databaseHandler.createTables()
+
         val manager: LifecycleEventManager<Plugin> = this.lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar()
@@ -32,14 +39,18 @@ class GuardianX : JavaPlugin(), Listener {
     }
 
     override fun onDisable() {
+        databaseHandler.closeConnection()
         AsyncChatEvent.getHandlerList().unregister(this as Listener)
         AsyncChatEvent.getHandlerList().unregister(this as Plugin)
     }
 
     fun restartGuardianTask() {
         try {
-            AsyncChatEvent.getHandlerList().unregister(this as Plugin)
             super.reloadConfig()
+            databaseHandler = MySQLDatabaseHandler(config, logger)
+            databaseHandler.openConnection()
+            databaseHandler.createTables()
+            AsyncChatEvent.getHandlerList().unregister(this as Plugin)
         } catch (e: Exception) {
             logger.err("Wystąpił błąd podczas przełądowania konfiguracji: " + e.message)
             e.printStackTrace()

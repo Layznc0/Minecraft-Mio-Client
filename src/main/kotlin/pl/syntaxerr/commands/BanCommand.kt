@@ -25,7 +25,12 @@ class BanCommand(private val plugin: GuardianX, private val pluginMetas: PluginM
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
 
-                    // Tutaj możesz zaimplementować logikę banowania gracza
+
+                    // TODO:
+                    //  * zaimplementować logikę banowania gracza
+                    //  * przenieść komunikaty do pliku językowego
+                    //  * utworzyć klase dla plików językowych
+
                     stack.sender.sendRichMessage("Zbanowałeś "+ player + " za " + reason + " na czas " + formatTime(gtime))
                     val message = Component.text("Gracz "+ player + " został zbanowany za " + reason + " na czas " + formatTime(gtime))
                     plugin.server.broadcast(message)

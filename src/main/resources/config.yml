@@ -6,16 +6,17 @@ database:
   sql:
     host: "localhost"
     port: 3306
-    name: "my_database"
+    dbname: "my_database"
     username: "user"
     password: "password"
 
 # Ustawienia sprawdzania i automatycznej aktualizacji
 checkForUpdates: true
 autoDownloadUpdates: false
+
 # Tryb debugowania ustawiony na true daje więcej opisów działań w konsoli
 debug: false
 
-# Czy bStats powinien być włączony?
+# Czy bStats powinien być włączony? Zalecane ustawienie: true
 bStats:
   enabled: true
