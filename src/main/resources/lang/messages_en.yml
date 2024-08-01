@@ -1,0 +1,9 @@
+error:
+  no_permission: "You do not have permission to use this command."
+  player_not_found: "Player with nickname {player} not found."
+ban:
+  ban: "You have banned {player} for {reason} for {time}"
+  usage: "Correct usage is: /ban <player> (time) <reason>"
+warn:
+  warn: "You have warned {player} for {reason} for {time}"
+  usage: "Correct usage is: /warn <player> (time) <reason>"

@@ -10,7 +10,9 @@ import org.bukkit.plugin.java.JavaPlugin
 import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.commands.BanCommand
 import pl.syntaxerr.commands.GuardianXCommands
+import pl.syntaxerr.commands.WarnCommand
 import pl.syntaxerr.databases.MySQLDatabaseHandler
+import pl.syntaxerr.helpers.MessageHandler
 
 @Suppress("UnstableApiUsage")
 class GuardianX : JavaPlugin(), Listener {
@@ -19,6 +21,7 @@ class GuardianX : JavaPlugin(), Listener {
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
     lateinit var databaseHandler: MySQLDatabaseHandler
+    private val messageHandler = MessageHandler(this)
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -33,7 +36,8 @@ class GuardianX : JavaPlugin(), Listener {
             val commands: Commands = event.registrar()
             commands.register("guardianx", "Komenda pluginu GuardianX. Wpisz /guardianx help aby sprawdzic dostępne komendy", GuardianXCommands(this))
             commands.register("gnx", "Komenda pluginu GuardianX. Wpisz /gnx help aby sprawdzic dostępne komendy", GuardianXCommands(this))
-            commands.register("ban", "Poprawne użycie to: /ban <player> (czas) <powód>", BanCommand(this, pluginMetas))
+            commands.register("ban", messageHandler.getMessage("ban", "usage"), BanCommand(this, pluginMetas))
+            commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
         logger.pluginStart()
     }

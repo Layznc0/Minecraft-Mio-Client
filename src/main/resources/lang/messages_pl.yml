@@ -1,0 +1,10 @@
+error:
+  no_permission: "Nie masz uprawnień do tej komendy."
+  player_not_found: "Nie znaleziono gracza o nicku {player}."
+ban:
+  ban: "Zbanowałeś {player} za {reason} na czas {time}"
+  usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
+
+warn:
+  warn: Ostrzegłeś {player} za {reason} na czas {time}
+  usage: "Poprawne użycie to: /ban <player> (czas) <powód>"

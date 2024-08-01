@@ -11,7 +11,7 @@ import pl.syntaxerr.helpers.MessageHandler
 import pl.syntaxerr.helpers.UUIDManager
 
 @Suppress("UnstableApiUsage")
-class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : BasicCommand {
+class WarnCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : BasicCommand {
 
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
@@ -23,7 +23,7 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
         if (args.isNotEmpty()) {
             if (stack.sender.hasPermission("GuardianX.ban")) {
                 if (args.size < 2) {
-                    stack.sender.sendRichMessage(messageHandler.getMessage("ban", "usage"))
+                    stack.sender.sendRichMessage(messageHandler.getMessage("warn", "usage"))
                 } else {
                     val player = args[0]
                     val uuid = uuidManager.getUUID(player)
@@ -42,16 +42,16 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
 
-                    stack.sender.sendRichMessage(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to formatTime(gtime))))
-                    val message = Component.text(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to formatTime(gtime))))
+                    stack.sender.sendRichMessage(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to formatTime(gtime))))
+                    val message = Component.text(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.info("Player " + player + "(" + uuid + ") has banned for " + reason + " to time " + formatTime(gtime))
+                    logger.info("Player " + player + "(" + uuid + ") has warned for " + reason + " to time " + formatTime(gtime))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
             }
         } else {
-            stack.sender.sendRichMessage(messageHandler.getMessage("ban", "usage"))
+            stack.sender.sendRichMessage(messageHandler.getMessage("warn", "usage"))
         }
     }
 
