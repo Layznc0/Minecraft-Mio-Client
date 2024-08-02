@@ -5,6 +5,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
 import java.sql.SQLException
+import java.sql.ResultSet
+import java.sql.Statement
 import org.bukkit.configuration.file.FileConfiguration
 
 class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger) {
@@ -172,4 +174,19 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
             logger.err("Failed to close the connection to the database. ${e.message}")
         }
     }
+    fun getPunishment(uuid: String): Punishment? {
+        val statement: Statement? = connection?.createStatement()
+        val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$uuid'")
+        return if (resultSet != null && resultSet.next()) {
+            val reason = resultSet.getString("reason")
+            val start = resultSet.getLong("start")
+            val end = resultSet.getLong("end")
+            Punishment(uuid, reason, start, end)
+        } else {
+            null
+        }
+    }
+
 }
+
+data class Punishment(val uuid: String, val reason: String, val start: Long, val end: Long)

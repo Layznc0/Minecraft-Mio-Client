@@ -14,6 +14,8 @@ import pl.syntaxerr.commands.WarnCommand
 import pl.syntaxerr.databases.MySQLDatabaseHandler
 import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.helpers.MessageHandler
+import pl.syntaxerr.helpers.PunishmentChecker
+import pl.syntaxerr.helpers.TimeHandler
 
 @Suppress("UnstableApiUsage")
 class GuardianX : JavaPlugin(), Listener {
@@ -22,7 +24,8 @@ class GuardianX : JavaPlugin(), Listener {
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
     lateinit var databaseHandler: MySQLDatabaseHandler
-    private lateinit var messageHandler: MessageHandler
+    lateinit var messageHandler: MessageHandler
+    lateinit var timeHandler: TimeHandler
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -43,6 +46,7 @@ class GuardianX : JavaPlugin(), Listener {
         }
         val pluginId = 22860
         val metrics = Metrics(this, pluginId)
+        server.pluginManager.registerEvents(PunishmentChecker(this), this)
         logger.pluginStart()
     }
 
