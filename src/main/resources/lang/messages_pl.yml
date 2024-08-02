@@ -4,6 +4,7 @@ error:
 ban:
   ban: "Zbanowałeś {player} za {reason} na czas {time}"
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
+  kick_message: "Zostałeś zbanowany na czas {time} z powodu: {reason}. Aby odwołać się od tej decyzji, odwiedź nasz serwer Discord."
 
 warn:
   warn: Ostrzegłeś {player} za {reason} na czas {time}

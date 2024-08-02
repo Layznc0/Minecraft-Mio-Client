@@ -4,6 +4,9 @@ error:
 ban:
   ban: "You have banned {player} for {reason} for {time}"
   usage: "Correct usage is: /ban <player> (time) <reason>"
+  kick_message: "You have been banned for {time} due to: {reason}. To appeal this decision, please visit our Discord server."
+
+
 warn:
   warn: "You have warned {player} for {reason} for {time}"
   usage: "Correct usage is: /warn <player> (time) <reason>"

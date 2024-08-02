@@ -1,7 +1,7 @@
 name: GuardianX
-version: '1.0-SNAPSHOT'
+version: '${project.version}'
 main: pl.syntaxerr.GuardianX
-api-version: '1.21'
+api-version: '1.20'
 authors: [ Syntaxerr ]
 description: System kar i strażnik serwera
 website: https://github.com/SyntaxDevTeam/GuardianX

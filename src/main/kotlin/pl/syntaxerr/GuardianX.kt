@@ -4,14 +4,15 @@ import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.event.player.AsyncChatEvent
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
+import org.bstats.bukkit.Metrics
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.commands.BanCommand
 import pl.syntaxerr.commands.GuardianXCommands
 import pl.syntaxerr.commands.WarnCommand
 import pl.syntaxerr.databases.MySQLDatabaseHandler
+import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.helpers.MessageHandler
 
 @Suppress("UnstableApiUsage")
@@ -21,11 +22,11 @@ class GuardianX : JavaPlugin(), Listener {
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
     lateinit var databaseHandler: MySQLDatabaseHandler
-    private val messageHandler = MessageHandler(this)
 
     override fun onEnable() {
         saveDefaultConfig()
         logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
+        val messageHandler = MessageHandler(this, pluginMetas)
 
         databaseHandler = MySQLDatabaseHandler(config, logger)
         databaseHandler.openConnection()
@@ -39,6 +40,8 @@ class GuardianX : JavaPlugin(), Listener {
             commands.register("ban", messageHandler.getMessage("ban", "usage"), BanCommand(this, pluginMetas))
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
+        val pluginId = 22860
+        val metrics = Metrics(this, pluginId)
         logger.pluginStart()
     }
 
