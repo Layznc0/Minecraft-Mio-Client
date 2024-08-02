@@ -4,6 +4,8 @@ import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import pl.syntaxerr.GuardianX
@@ -46,7 +48,34 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
                     val targetPlayer = Bukkit.getPlayer(player)
                     targetPlayer?.sendMessage(Component.text(messageHandler.getMessage("ban", "kick_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))))
-                    targetPlayer?.kick(Component.text(messageHandler.getMessage("ban", "kick_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))))
+                    if (targetPlayer != null) {
+                        val kickMessage = Component.text()
+                            .append(Component.text("GuardianX ").color(NamedTextColor.RED))
+                            .append(Component.text("You are banned").color(NamedTextColor.GRAY))
+                            .append(Component.newline())
+                            .append(Component.newline())
+                            .append(Component.text("Reason ").color(NamedTextColor.RED))
+                            .append(Component.text("» ").color(NamedTextColor.DARK_GRAY))
+                            .append(Component.text(reason).color(NamedTextColor.GRAY))
+                            .append(Component.newline())
+                            .append(Component.text("Duration ").color(NamedTextColor.RED))
+                            .append(Component.text("» ").color(NamedTextColor.DARK_GRAY))
+                            .append(Component.text(timeHandler.formatTime(gtime)).color(NamedTextColor.GRAY))
+                            .append(Component.newline())
+                            .append(Component.newline())
+                            .append(Component.text("Unban application in Discord").color(NamedTextColor.DARK_GRAY))
+                            .append(Component.newline())
+                            .append(Component.text("Discord ").color(NamedTextColor.YELLOW))
+                            .append(Component.text("» ").color(NamedTextColor.DARK_GRAY))
+                            .append(
+                                Component.text("https://SyntaxDevTeam.pl/discord").color(NamedTextColor.RED).decorate(
+                                    TextDecoration.UNDERLINED
+                                )
+                            )
+                            .build()
+
+                        targetPlayer.kick(kickMessage)
+                    }
 
                     stack.sender.sendRichMessage(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     val message = Component.text(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))

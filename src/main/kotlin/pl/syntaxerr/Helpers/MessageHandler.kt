@@ -36,8 +36,10 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
     }
 
     fun getMessage(category: String, key: String, placeholders: Map<String, String> = emptyMap()): String {
-        val message = messages.getString("$category.$key") ?: "Message not found. Check console..."
-        logger.err("There was an error loading the message $key from category $category")
+        val message = messages.getString("$category.$key") ?: run {
+            logger.err("There was an error loading the message $key from category $category")
+            "Message not found. Check console..."
+        }
         return placeholders.entries.fold(message) { acc, entry ->
             acc.replace("{${entry.key}}", entry.value)
         }
