@@ -4,7 +4,16 @@ error:
 ban:
   ban: "You have banned {player} for {reason} for {time}"
   usage: "Correct usage is: /ban <player> (time) <reason>"
-  kick_message: "You have been banned for {time} due to: {reason}. To appeal this decision, please visit our Discord server."
+  kick_message:
+    - 'Minecraft Server: Name'
+    - 'GuardianX &7You are banned'
+    - '&7'
+    - '&7'
+    - "&cReason &8» &7{reason}"
+    - "&cDuration &8» &7{time}"
+    - '&7'
+    - '&8Unban application in Discord'
+    - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
 
 
 warn:

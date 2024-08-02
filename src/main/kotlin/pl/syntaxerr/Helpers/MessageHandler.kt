@@ -1,6 +1,9 @@
 package pl.syntaxerr.helpers
 
 import io.papermc.paper.plugin.configuration.PluginMeta
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
@@ -8,9 +11,10 @@ import java.io.File
 
 @Suppress("UnstableApiUsage")
 class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
-    private var messages: FileConfiguration
     private val language = plugin.config.getString("language") ?: "PL"
-    private var debugMode = plugin.config.getBoolean("debug")
+    private var messages: FileConfiguration
+    private var config = plugin.config
+    private var debugMode = config.getBoolean("debug")
     private val logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
 
     init {
@@ -42,6 +46,24 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
         }
         return placeholders.entries.fold(message) { acc, entry ->
             acc.replace("{${entry.key}}", entry.value)
+        }
+    }
+
+    fun getComplexMessage(category: String, key: String, placeholders: Map<String, String> = emptyMap()): List<Component> {
+        val messageList = messages.getStringList("$category.$key")
+        if (messageList.isEmpty()) {
+            logger.err("There was an error loading the message list $key from category $category")
+            return listOf(Component.text("Message list not found. Check console..."))
+        }
+        return messageList.map { message ->
+            val formattedMessage = placeholders.entries.fold(message) { acc, entry ->
+                acc.replace("{${entry.key}}", entry.value)
+            }
+            if (formattedMessage.contains("<")) {
+                MiniMessage.miniMessage().deserialize(formattedMessage)
+            } else {
+                LegacyComponentSerializer.legacyAmpersand().deserialize(formattedMessage)
+            }
         }
     }
 }
