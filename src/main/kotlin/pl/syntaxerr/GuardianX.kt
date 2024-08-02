@@ -22,11 +22,12 @@ class GuardianX : JavaPlugin(), Listener {
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
     lateinit var databaseHandler: MySQLDatabaseHandler
+    private lateinit var messageHandler: MessageHandler
 
     override fun onEnable() {
         saveDefaultConfig()
         logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
-        val messageHandler = MessageHandler(this, pluginMetas)
+        messageHandler = MessageHandler(this, pluginMetas)
 
         databaseHandler = MySQLDatabaseHandler(config, logger)
         databaseHandler.openConnection()
@@ -57,6 +58,7 @@ class GuardianX : JavaPlugin(), Listener {
             databaseHandler = MySQLDatabaseHandler(config, logger)
             databaseHandler.openConnection()
             databaseHandler.createTables()
+            messageHandler.reloadMessages()
             AsyncChatEvent.getHandlerList().unregister(this as Plugin)
         } catch (e: Exception) {
             logger.err("Wystąpił błąd podczas przełądowania konfiguracji: " + e.message)
