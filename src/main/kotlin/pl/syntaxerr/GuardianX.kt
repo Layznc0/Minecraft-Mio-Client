@@ -31,6 +31,7 @@ class GuardianX : JavaPlugin(), Listener {
         saveDefaultConfig()
         logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
         messageHandler = MessageHandler(this, pluginMetas)
+        timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
 
         databaseHandler = MySQLDatabaseHandler(config, logger)
         databaseHandler.openConnection()

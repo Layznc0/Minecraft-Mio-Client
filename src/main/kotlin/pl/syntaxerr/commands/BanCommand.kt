@@ -4,6 +4,7 @@ import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
+import org.bukkit.BanList
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import pl.syntaxerr.GuardianX
@@ -11,6 +12,7 @@ import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.helpers.MessageHandler
 import pl.syntaxerr.helpers.TimeHandler
 import pl.syntaxerr.helpers.UUIDManager
+import java.util.*
 
 @Suppress("UnstableApiUsage")
 class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : BasicCommand {
@@ -44,6 +46,11 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
 
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
+
+                    val banList: BanList<String> = Bukkit.getBanList(BanList.Type.NAME)
+                    val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
+                    banList.addBan(player, reason, banEndDate, stack.sender.name)
+
                     val targetPlayer = Bukkit.getPlayer(player)
                     if (targetPlayer != null) {
                         val kickMessages = messageHandler.getComplexMessage("ban", "kick_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))

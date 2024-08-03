@@ -2,16 +2,15 @@ package pl.syntaxerr.helpers
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerLoginEvent
 import pl.syntaxerr.GuardianX
 import net.kyori.adventure.text.Component
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 
 class PunishmentChecker(private val plugin: GuardianX) : Listener {
 
     @EventHandler
-    fun onPlayerLogin(event: PlayerLoginEvent) {
-        val player = event.player
-        val uuid = player.uniqueId.toString()
+    fun onPlayerPreLogin(event: AsyncPlayerPreLoginEvent) {
+        val uuid = event.uniqueId.toString()
 
         val punishment = plugin.databaseHandler.getPunishment(uuid)
         if (punishment != null) {
@@ -25,7 +24,7 @@ class PunishmentChecker(private val plugin: GuardianX) : Listener {
                     kickMessage.append(line)
                     kickMessage.append(Component.newline())
                 }
-                event.result = PlayerLoginEvent.Result.KICK_BANNED
+                event.loginResult = AsyncPlayerPreLoginEvent.Result.KICK_BANNED
                 event.kickMessage(kickMessage.build())
             }
         }
