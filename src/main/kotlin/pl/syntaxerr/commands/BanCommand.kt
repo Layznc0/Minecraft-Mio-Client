@@ -5,6 +5,7 @@ import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
+import io.papermc.paper.ban.BanListType
 import org.bukkit.BanList
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
@@ -49,10 +50,9 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
 
                     val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
-                    val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanList.Type.PROFILE)
+                    val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanListType.PROFILE)
                     val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
                     banList.addBan(playerProfile, reason, banEndDate, stack.sender.name)
-
 
                     val targetPlayer = Bukkit.getPlayer(player)
                     if (targetPlayer != null) {
