@@ -1,6 +1,5 @@
 package pl.syntaxerr.databases
 
-import pl.syntaxerr.helpers.Logger
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
@@ -8,8 +7,9 @@ import java.sql.SQLException
 import java.sql.ResultSet
 import java.sql.Statement
 import org.bukkit.configuration.file.FileConfiguration
+import pl.syntaxerr.GuardianX
 
-class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger) {
+class MySQLDatabaseHandler(private val plugin: GuardianX, config: FileConfiguration) {
     private var connection: Connection? = null
     private val url: String = "jdbc:mysql://${config.getString("database.sql.host")}:${config.getString("database.sql.port")}/${config.getString("database.sql.dbname")}"
     private val user: String = config.getString("database.sql.username") ?: ""
@@ -18,13 +18,13 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
     fun openConnection() {
         try {
             connection = DriverManager.getConnection(url, user, password)
-            logger.success("Connection to the database established.")
+            plugin.logger.success("Connection to the database established.")
         } catch (e: SQLException) {
-            logger.err("Failed to establish connection to the database. ${e.message}")
+            plugin.logger.err("Failed to establish connection to the database. ${e.message}")
         }
     }
 
-    fun isConnected(): Boolean {
+    private fun isConnected(): Boolean {
         return connection != null && !connection!!.isClosed
     }
 
@@ -66,12 +66,12 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
 
                 statement.executeUpdate(createPunishmentsTable)
                 statement.executeUpdate(createPunishmentHistoryTable)
-                logger.debug("Tables `punishments` and `punishmenthistory` created or already exist.")
+                plugin.logger.debug("Tables `punishments` and `punishmenthistory` created or already exist.")
             } catch (e: SQLException) {
-                logger.err("Failed to create tables. ${e.message}")
+                plugin.logger.err("Failed to create tables. ${e.message}")
             }
         } else {
-            logger.warning("Not connected to the database.")
+            plugin.logger.warning("Not connected to the database.")
         }
     }
 
@@ -96,12 +96,12 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
                 preparedStatement.setString(6, start)
                 preparedStatement.setString(7, end)
                 preparedStatement.executeUpdate()
-                logger.debug("Punishment for player $name added to the database.")
+                plugin.logger.debug("Punishment for player $name added to the database.")
             } catch (e: SQLException) {
-                logger.err("Failed to add punishment for player $name. ${e.message}")
+                plugin.logger.err("Failed to add punishment for player $name. ${e.message}")
             }
         } else {
-            logger.warning("Failed to reconnect to the database.")
+            plugin.logger.warning("Failed to reconnect to the database.")
         }
     }
 
@@ -126,12 +126,12 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
                 preparedStatement.setString(6, start)
                 preparedStatement.setString(7, end)
                 preparedStatement.executeUpdate()
-                logger.debug("Punishment history for player $name added to the database.")
+                plugin.logger.debug("Punishment history for player $name added to the database.")
             } catch (e: SQLException) {
-                logger.err("Failed to add punishment history for player $name. ${e.message}")
+                plugin.logger.err("Failed to add punishment history for player $name. ${e.message}")
             }
         } else {
-            logger.warning("Failed to reconnect to the database.")
+            plugin.logger.warning("Failed to reconnect to the database.")
         }
     }
 
@@ -139,13 +139,11 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
         if (!isConnected()) {
             openConnection()
         }
-
         if (isConnected()) {
             val query = """
             DELETE FROM `punishments` 
             WHERE `name` = ? AND `uuid` = ? AND `punishmentType` = ?
         """.trimIndent()
-
             try {
                 val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
                 preparedStatement.setString(1, name)
@@ -153,40 +151,50 @@ class MySQLDatabaseHandler(config: FileConfiguration, private val logger: Logger
                 preparedStatement.setString(3, punishmentType)
                 val rowsAffected = preparedStatement.executeUpdate()
                 if (rowsAffected > 0) {
-                    logger.debug("Punishment of type $punishmentType for player $name removed from the database.")
+                    plugin.logger.debug("Punishment of type $punishmentType for player $name removed from the database.")
                 } else {
-                    logger.warning("No punishment of type $punishmentType found for player $name.")
+                    plugin.logger.warning("No punishment of type $punishmentType found for player $name.")
                 }
             } catch (e: SQLException) {
-                logger.err("Failed to remove punishment of type $punishmentType for player $name. ${e.message}")
+                plugin.logger.err("Failed to remove punishment of type $punishmentType for player $name. ${e.message}")
             }
         } else {
-            logger.warning("Failed to reconnect to the database.")
+            plugin.logger.warning("Failed to reconnect to the database.")
         }
     }
-
 
     fun closeConnection() {
         try {
             connection?.close()
-            logger.info("Connection to the database closed.")
+            plugin.logger.info("Connection to the database closed.")
         } catch (e: SQLException) {
-            logger.err("Failed to close the connection to the database. ${e.message}")
+            plugin.logger.err("Failed to close the connection to the database. ${e.message}")
         }
     }
+
     fun getPunishment(uuid: String): Punishment? {
         val statement: Statement? = connection?.createStatement()
+        plugin.logger.info("Wykonywanie zapytania SQL dla UUID: $uuid")
         val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$uuid'")
         return if (resultSet != null && resultSet.next()) {
+            val type = resultSet.getString("punishmentType")
             val reason = resultSet.getString("reason")
             val start = resultSet.getLong("start")
             val end = resultSet.getLong("end")
-            Punishment(uuid, reason, start, end)
+            val punishment = Punishment(uuid, type, reason, start, end)
+            if (plugin.punishmentManager.isPunishmentActive(punishment)) {
+                plugin.logger.info("Kara znaleziona dla UUID: $uuid, typ: $type, powód: $reason, start: $start, koniec: $end")
+                punishment
+            } else {
+                plugin.logger.info("Kara dla UUID: $uuid wygasła i została usunięta")
+                plugin.databaseHandler.removePunishment("", uuid, type)
+                null
+            }
         } else {
+            plugin.logger.info("Brak kary dla UUID: $uuid")
             null
         }
     }
-
 }
 
-data class Punishment(val uuid: String, val reason: String, val start: Long, val end: Long)
+data class Punishment(val uuid: String, val type: String, val reason: String, val start: Long, val end: Long)

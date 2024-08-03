@@ -21,7 +21,7 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
 
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
-    private val logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
+    private val logger = Logger(pluginMetas, debugMode)
     private val uuidManager = UUIDManager()
     private val messageHandler = MessageHandler(plugin, pluginMetas)
     private val timeHandler = TimeHandler(plugin.config.getString("language") ?: "PL")

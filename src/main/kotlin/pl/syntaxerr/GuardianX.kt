@@ -12,28 +12,38 @@ import pl.syntaxerr.commands.BanCommand
 import pl.syntaxerr.commands.GuardianXCommands
 import pl.syntaxerr.commands.WarnCommand
 import pl.syntaxerr.databases.MySQLDatabaseHandler
-import pl.syntaxerr.helpers.Logger
-import pl.syntaxerr.helpers.MessageHandler
-import pl.syntaxerr.helpers.PunishmentChecker
-import pl.syntaxerr.helpers.TimeHandler
+import pl.syntaxerr.helpers.*
 
 @Suppress("UnstableApiUsage")
 class GuardianX : JavaPlugin(), Listener {
-    private lateinit var logger: Logger
+    lateinit var logger: Logger
     private val pluginMetas = this.pluginMeta
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
     lateinit var databaseHandler: MySQLDatabaseHandler
     lateinit var messageHandler: MessageHandler
     lateinit var timeHandler: TimeHandler
+    lateinit var punishmentManager: PunishmentManager
+    private lateinit var pluginPrioritizer: PluginPrioritizer
+
+    override fun onLoad() {
+        logger = Logger(pluginMetas, debugMode)
+        // Inicjalizacja PluginPrioritizer
+        pluginPrioritizer = PluginPrioritizer(this)
+        // Rejestracja pluginu na etapie onLoad
+        pluginPrioritizer.registerPlugin()
+    }
 
     override fun onEnable() {
         saveDefaultConfig()
-        logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
+        server.pluginManager.registerEvents(pluginPrioritizer, this)
+        server.pluginManager.registerEvents(PunishmentChecker(this), this)
+        logger.info("Registered plugins: ${pluginPrioritizer.registeredPlugins}")
+
         messageHandler = MessageHandler(this, pluginMetas)
         timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
-
-        databaseHandler = MySQLDatabaseHandler(config, logger)
+        punishmentManager = PunishmentManager()
+        databaseHandler = MySQLDatabaseHandler(this, this.config)
         databaseHandler.openConnection()
         databaseHandler.createTables()
 
@@ -46,10 +56,17 @@ class GuardianX : JavaPlugin(), Listener {
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
         val pluginId = 22860
-        val metrics = Metrics(this, pluginId)
-        server.pluginManager.registerEvents(PunishmentChecker(this), this)
-        logger.pluginStart()
+        Metrics(this, pluginId)
+
+        val highestPriorityPlugin = pluginPrioritizer.registeredPlugins.maxByOrNull { it.second }
+        logger.info("Highest priority plugin: $highestPriorityPlugin")
+
+        if (highestPriorityPlugin?.first == name) {
+            pluginPrioritizer.displayLogo()
+        }
     }
+
+
 
     override fun onDisable() {
         databaseHandler.closeConnection()
@@ -60,11 +77,7 @@ class GuardianX : JavaPlugin(), Listener {
     fun restartGuardianTask() {
         try {
             super.reloadConfig()
-            databaseHandler = MySQLDatabaseHandler(config, logger)
-            databaseHandler.openConnection()
-            databaseHandler.createTables()
-            messageHandler.reloadMessages()
-            AsyncChatEvent.getHandlerList().unregister(this as Plugin)
+            onEnable()
         } catch (e: Exception) {
             logger.err("Wystąpił błąd podczas przełądowania konfiguracji: " + e.message)
             e.printStackTrace()

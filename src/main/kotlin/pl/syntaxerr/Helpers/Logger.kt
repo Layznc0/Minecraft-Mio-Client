@@ -1,9 +1,12 @@
 package pl.syntaxerr.helpers
 
+import io.papermc.paper.plugin.configuration.PluginMeta
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 
-class Logger(private val fullName: String?, private val serverVersion: String?, private val plName: String?, private val debugMode: Boolean) {
+@Suppress("UnstableApiUsage")
+class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
+    private val plName = pluginMetas.name
 
     private fun clear(s: String?) {
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', s!!))
@@ -44,7 +47,7 @@ class Logger(private val fullName: String?, private val serverVersion: String?, 
         }
     }
 
-    fun pluginStart() {
+    fun pluginStart(registeredPlugins: List<Pair<String, Int>>) {
         clear("")
         clear("&9    _____             _             _____          _______                   ")
         clear("&9   / ____|           | |           |  __ \\        |__   __|                  ")
@@ -55,7 +58,13 @@ class Logger(private val fullName: String?, private val serverVersion: String?, 
         clear("&9           __/ |                                                             ")
         clear("&9          |___/                                                              ")
         clear("&9                                                                             ")
-        clear("&9    ... is proud to present and enabled &f&l$fullName&9,                       ")
+        clear("&9    ... is proud to present and enabled:")
+        clear("&9             &f * &f&l$plName")
+        registeredPlugins.forEach { (name, priority) ->
+            if (name != plName) {
+                clear("&9             &f * $name")
+            }
+        }
         clear("&9                   running on Paper and utilizing its optimizations!         ")
         clear("")
         clear("&a    Join our Discord! &9&lhttps://discord.gg/Zk6mxv7eMh")

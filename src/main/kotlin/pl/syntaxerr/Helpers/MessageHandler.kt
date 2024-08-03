@@ -15,7 +15,7 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
     private var messages: FileConfiguration
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
-    private val logger = Logger(pluginMetas.name, pluginMetas.version, pluginMetas.name, debugMode)
+    private val logger = Logger(pluginMetas, debugMode)
 
     init {
         copyDefaultMessages()
