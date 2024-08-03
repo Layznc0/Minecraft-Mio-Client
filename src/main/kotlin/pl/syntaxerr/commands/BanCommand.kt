@@ -1,5 +1,6 @@
 package pl.syntaxerr.commands
 
+import com.destroystokyo.paper.profile.PlayerProfile
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
@@ -47,9 +48,11 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
 
-                    val banList: BanList<String> = Bukkit.getBanList(BanList.Type.NAME)
+                    val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
+                    val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanList.Type.PROFILE)
                     val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
-                    banList.addBan(player, reason, banEndDate, stack.sender.name)
+                    banList.addBan(playerProfile, reason, banEndDate, stack.sender.name)
+
 
                     val targetPlayer = Bukkit.getPlayer(player)
                     if (targetPlayer != null) {
