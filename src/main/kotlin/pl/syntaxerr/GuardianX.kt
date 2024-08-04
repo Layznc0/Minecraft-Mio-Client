@@ -59,12 +59,15 @@ class GuardianX : JavaPlugin(), Listener {
         // Rejestracja pluginu po zarejestrowaniu nasłuchiwacza
         pluginPrioritizer.registerPlugin()
 
-        val highestPriorityPlugin = pluginPrioritizer.registeredPlugins.maxByOrNull { it.second }
-        logger.info("Highest priority plugin: $highestPriorityPlugin")
+        // Dodanie opóźnienia przed wyświetleniem logo
+        server.scheduler.runTaskLater(this, Runnable {
+            val highestPriorityPlugin = pluginPrioritizer.registeredPlugins.maxByOrNull { it.second }
+            logger.info("Highest priority plugin: $highestPriorityPlugin")
 
-        if (highestPriorityPlugin?.first == name) {
-            pluginPrioritizer.displayLogo()
-        }
+            if (highestPriorityPlugin?.first == name) {
+                pluginPrioritizer.displayLogo()
+            }
+        }, 20L) // Opóźnienie 1 sekundy (20 ticków)
     }
 
     override fun onDisable() {
