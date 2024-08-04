@@ -36,7 +36,7 @@ class GuardianX : JavaPlugin(), Listener {
         saveDefaultConfig()
         server.pluginManager.registerEvents(pluginPrioritizer, this)
         server.pluginManager.registerEvents(PunishmentChecker(this), this)
-        logger.info("Registered plugins: ${pluginPrioritizer.registeredPlugins}")
+        logger.debug("Registered plugins: ${pluginPrioritizer.registeredPlugins}")
 
         messageHandler = MessageHandler(this, pluginMetas)
         timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
@@ -62,7 +62,7 @@ class GuardianX : JavaPlugin(), Listener {
         // Dodanie opóźnienia przed wyświetleniem logo
         server.scheduler.runTaskLater(this, Runnable {
             val highestPriorityPlugin = pluginPrioritizer.registeredPlugins.maxByOrNull { it.second }
-            logger.info("Highest priority plugin: $highestPriorityPlugin")
+            logger.debug("Highest priority plugin: $highestPriorityPlugin")
 
             if (highestPriorityPlugin?.first == name) {
                 pluginPrioritizer.displayLogo()
