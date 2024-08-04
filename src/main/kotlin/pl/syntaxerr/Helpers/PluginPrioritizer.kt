@@ -13,20 +13,20 @@ class PluginPrioritizer(private val plugin: GuardianX) : Listener {
         val pluginName = plugin.name
         val priority = 2
         val myEvent = CustomEvent(pluginName, priority)
-        plugin.logger.info("Calling CustomEvent for plugin: $pluginName with priority: $priority")
+        plugin.logger.debug("Calling CustomEvent for plugin: $pluginName with priority: $priority")
         Bukkit.getPluginManager().callEvent(myEvent)
-        plugin.logger.info("CustomEvent called for plugin: $pluginName")
+        plugin.logger.debug("CustomEvent called for plugin: $pluginName")
     }
 
     @EventHandler
     fun onMyCustomEvent(event: CustomEvent) {
-        plugin.logger.info("Received CustomEvent for plugin: ${event.pluginName} with priority: ${event.priority}")
+        plugin.logger.debug("Received CustomEvent for plugin: ${event.pluginName} with priority: ${event.priority}")
         registeredPlugins.add(event.pluginName to event.priority)
-        plugin.logger.info("Plugin ${event.pluginName} with priority ${event.priority} added to registeredPlugins")
+        plugin.logger.debug("Plugin ${event.pluginName} with priority ${event.priority} added to registeredPlugins")
     }
 
     fun displayLogo() {
-        plugin.logger.info("Displaying logo and information about other plugins...")
+        plugin.logger.debug("Displaying logo and information about other plugins...")
         plugin.logger.pluginStart(registeredPlugins)
     }
 }
