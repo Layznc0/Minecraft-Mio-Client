@@ -30,8 +30,6 @@ class GuardianX : JavaPlugin(), Listener {
         logger = Logger(pluginMetas, debugMode)
         // Inicjalizacja PluginPrioritizer
         pluginPrioritizer = PluginPrioritizer(this)
-        // Rejestracja pluginu na etapie onLoad
-        pluginPrioritizer.registerPlugin()
     }
 
     override fun onEnable() {
@@ -58,6 +56,9 @@ class GuardianX : JavaPlugin(), Listener {
         val pluginId = 22860
         Metrics(this, pluginId)
 
+        // Rejestracja pluginu po zarejestrowaniu nasłuchiwacza
+        pluginPrioritizer.registerPlugin()
+
         val highestPriorityPlugin = pluginPrioritizer.registeredPlugins.maxByOrNull { it.second }
         logger.info("Highest priority plugin: $highestPriorityPlugin")
 
@@ -65,8 +66,6 @@ class GuardianX : JavaPlugin(), Listener {
             pluginPrioritizer.displayLogo()
         }
     }
-
-
 
     override fun onDisable() {
         databaseHandler.closeConnection()
