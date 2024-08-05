@@ -33,8 +33,7 @@ class GuardianX : JavaPlugin(), Listener {
 
     override fun onEnable() {
         saveDefaultConfig()
-        server.pluginManager.registerEvents(pluginPrioritizer, this)
-        server.pluginManager.registerEvents(PunishmentChecker(this), this)
+        registerEvents()
         logger.debug("Registered plugins: ${pluginPrioritizer.registeredPlugins}")
 
         messageHandler = MessageHandler(this, pluginMetas)
@@ -69,6 +68,11 @@ class GuardianX : JavaPlugin(), Listener {
         databaseHandler.closeConnection()
         AsyncChatEvent.getHandlerList().unregister(this as Listener)
         AsyncChatEvent.getHandlerList().unregister(this as Plugin)
+    }
+
+    private fun registerEvents() {
+        server.pluginManager.registerEvents(pluginPrioritizer, this)
+        server.pluginManager.registerEvents(PunishmentChecker(this), this)
     }
 
     fun restartGuardianTask() {
