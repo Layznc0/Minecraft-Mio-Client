@@ -18,7 +18,7 @@ class MySQLDatabaseHandler(private val plugin: GuardianX, config: FileConfigurat
     fun openConnection() {
         try {
             connection = DriverManager.getConnection(url, user, password)
-            plugin.logger.success("Connection to the database established.")
+            plugin.logger.debug("Connection to the database established.")
         } catch (e: SQLException) {
             plugin.logger.err("Failed to establish connection to the database. ${e.message}")
         }
@@ -26,10 +26,6 @@ class MySQLDatabaseHandler(private val plugin: GuardianX, config: FileConfigurat
 
     private fun isConnected(): Boolean {
         return connection != null && !connection!!.isClosed
-    }
-
-    fun getConnection(): Connection? {
-        return connection
     }
 
     fun createTables() {

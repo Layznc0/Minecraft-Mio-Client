@@ -24,17 +24,14 @@ class GuardianX : JavaPlugin(), Listener {
     lateinit var messageHandler: MessageHandler
     lateinit var timeHandler: TimeHandler
     lateinit var punishmentManager: PunishmentManager
-    private lateinit var pluginPrioritizer: PluginPrioritizer
+    private lateinit var pluginManager: PluginManager
 
     override fun onLoad() {
         logger = Logger(pluginMetas, debugMode)
-        pluginPrioritizer = PluginPrioritizer(this)
     }
 
     override fun onEnable() {
         saveDefaultConfig()
-        registerEvents()
-        logger.debug("Registered plugins: ${pluginPrioritizer.registeredPlugins}")
 
         messageHandler = MessageHandler(this, pluginMetas)
         timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
@@ -53,26 +50,28 @@ class GuardianX : JavaPlugin(), Listener {
         }
         val pluginId = 22860
         Metrics(this, pluginId)
-        pluginPrioritizer.registerPlugin()
-        server.scheduler.runTaskLater(this, Runnable {
-            val highestPriorityPlugin = pluginPrioritizer.registeredPlugins.maxByOrNull { it.second }
-            logger.debug("Highest priority plugin: $highestPriorityPlugin")
+        // Inicjalizacja PluginManager z przekazaniem obiektu JavaPlugin
+        pluginManager = PluginManager(this)
 
-            if (highestPriorityPlugin?.first == name) {
-                pluginPrioritizer.displayLogo()
-            }
-        }, 20L)
+        // Pobranie listy pluginów z zewnętrznego źródła
+        val externalPlugins = pluginManager.fetchPluginsFromExternalSource("https://raw.githubusercontent.com/SyntaxDevTeam/plugins-list/main/plugins.json")
+
+        // Pobranie listy załadowanych pluginów
+        val loadedPlugins = pluginManager.fetchLoadedPlugins()
+
+        // Pobranie nazwy pluginu z najwyższym priorytetem
+        val highestPriorityPlugin = pluginManager.getHighestPriorityPlugin(externalPlugins, loadedPlugins)
+
+        // Sprawdzenie, czy nazwa pluginu z najwyższym priorytetem to ta sama co aktualnie uruchamiany plugin
+        if (highestPriorityPlugin == pluginMeta.name) {
+            val syntaxDevTeamPlugins = loadedPlugins.filter { it != pluginMeta.name }
+            logger.pluginStart(syntaxDevTeamPlugins)
+        }
     }
 
     override fun onDisable() {
         databaseHandler.closeConnection()
-        AsyncChatEvent.getHandlerList().unregister(this as Listener)
         AsyncChatEvent.getHandlerList().unregister(this as Plugin)
-    }
-
-    private fun registerEvents() {
-        server.pluginManager.registerEvents(pluginPrioritizer, this)
-        server.pluginManager.registerEvents(PunishmentChecker(this), this)
     }
 
     fun restartGuardianTask() {
@@ -81,7 +80,6 @@ class GuardianX : JavaPlugin(), Listener {
             onEnable()
         } catch (e: Exception) {
             logger.err("Wystąpił błąd podczas przełądowania konfiguracji: " + e.message)
-            e.printStackTrace()
         }
     }
 }

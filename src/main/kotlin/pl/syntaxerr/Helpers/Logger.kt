@@ -47,7 +47,9 @@ class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
         }
     }
 
-    fun pluginStart(registeredPlugins: List<Pair<String, Int>>) {
+    fun pluginStart(pluginsByPriority: List<String>) {
+        clear("")
+        clear("&9-------------------------------------------------------------------------------")
         clear("")
         clear("&9    _____             _             _____          _______                   ")
         clear("&9   / ____|           | |           |  __ \\        |__   __|                  ")
@@ -59,15 +61,15 @@ class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
         clear("&9          |___/                                                              ")
         clear("&9                                                                             ")
         clear("&9    ... is proud to present and enabled:")
-        clear("&9             &f * &f&l$plName")
-        registeredPlugins.forEach { (name, priority) ->
-            if (name != plName) {
-                clear("&9             &f * $name")
-            }
+        clear("&9             &f * &f&l${plName}")
+        for (plugin in pluginsByPriority) {
+            clear("&9             &f * $plugin")
         }
         clear("&9                   running on Paper and utilizing its optimizations!         ")
         clear("")
         clear("&a    Join our Discord! &9&lhttps://discord.gg/Zk6mxv7eMh")
+        clear("")
+        clear("&9-------------------------------------------------------------------------------")
         clear("")
     }
 }
