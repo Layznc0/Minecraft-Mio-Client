@@ -5,7 +5,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.NotNull
-import pl.syntaxerr.GuardianX
+import pl.syntaxerr.PunisherX
 import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.helpers.MessageHandler
 import pl.syntaxerr.helpers.TimeHandler

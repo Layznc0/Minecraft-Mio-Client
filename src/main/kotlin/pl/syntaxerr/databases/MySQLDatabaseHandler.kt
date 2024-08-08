@@ -7,7 +7,7 @@ import java.sql.SQLException
 import java.sql.ResultSet
 import java.sql.Statement
 import org.bukkit.configuration.file.FileConfiguration
-import pl.syntaxerr.GuardianX
+import pl.syntaxerr.PunisherX
 
 class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfiguration) {
     private var connection: Connection? = null
