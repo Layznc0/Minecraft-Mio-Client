@@ -1,4 +1,4 @@
-package pl.syntaxerr.base
+package pl.syntaxerr.basic
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
