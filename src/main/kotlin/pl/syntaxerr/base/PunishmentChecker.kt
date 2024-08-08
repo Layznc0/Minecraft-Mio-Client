@@ -2,11 +2,11 @@ package pl.syntaxerr.base
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import pl.syntaxerr.GuardianX
+import pl.syntaxerr.PunisherX
 import net.kyori.adventure.text.Component
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 
-class PunishmentChecker(private val plugin: GuardianX) : Listener {
+class PunishmentChecker(private val plugin: PunisherX) : Listener {
 
     @EventHandler
     fun onPlayerPreLogin(event: AsyncPlayerPreLoginEvent) {

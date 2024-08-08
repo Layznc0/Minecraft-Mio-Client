@@ -46,7 +46,7 @@ class PunisherX : JavaPlugin(), Listener {
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
         server.pluginManager.registerEvents(PunishmentChecker(this), this)
-        val pluginId = 22860
+        val pluginId = 22952
         Metrics(this, pluginId)
         pluginManager = PluginManager(this)
         val externalPlugins = pluginManager.fetchPluginsFromExternalSource("https://raw.githubusercontent.com/SyntaxDevTeam/plugins-list/main/plugins.json")

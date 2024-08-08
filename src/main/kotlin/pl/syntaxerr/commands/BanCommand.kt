@@ -9,7 +9,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.BanList
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
-import pl.syntaxerr.GuardianX
+import pl.syntaxerr.PunisherX
 import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.helpers.MessageHandler
 import pl.syntaxerr.helpers.TimeHandler
