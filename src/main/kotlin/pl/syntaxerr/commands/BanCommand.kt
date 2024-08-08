@@ -17,7 +17,7 @@ import pl.syntaxerr.helpers.UUIDManager
 import java.util.*
 
 @Suppress("UnstableApiUsage")
-class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : BasicCommand {
+class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : BasicCommand {
 
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
@@ -46,12 +46,12 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
 
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
-
+/*
                     val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
                     val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanListType.PROFILE)
                     val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
                     banList.addBan(playerProfile, reason, banEndDate, stack.sender.name)
-
+*/
                     val targetPlayer = Bukkit.getPlayer(player)
                     if (targetPlayer != null) {
                         val kickMessages = messageHandler.getComplexMessage("ban", "kick_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))

@@ -1,7 +1,7 @@
-name: GuardianX
+name: PunisherX
 version: '${project.version}'
-main: pl.syntaxerr.GuardianX
+main: pl.syntaxerr.PunisherX
 api-version: '1.21'
 authors: [SyntaxDevTeam]
-description: System kar i strażnik serwera
-website: https://github.com/SyntaxDevTeam/GuardianX
+description: System kar serwera
+website: https://github.com/SyntaxDevTeam

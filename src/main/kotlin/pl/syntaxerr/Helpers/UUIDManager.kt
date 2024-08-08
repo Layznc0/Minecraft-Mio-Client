@@ -9,9 +9,9 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
-import pl.syntaxerr.GuardianX
+import pl.syntaxerr.PunisherX
 
-class UUIDManager(private val plugin: GuardianX) {
+class UUIDManager(private val plugin: PunisherX) {
     private val activeUUIDs: MutableMap<String, String> = HashMap()
 
     fun getUUID(playerName: String): String? {

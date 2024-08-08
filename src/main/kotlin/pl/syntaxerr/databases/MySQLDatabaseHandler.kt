@@ -9,7 +9,7 @@ import java.sql.Statement
 import org.bukkit.configuration.file.FileConfiguration
 import pl.syntaxerr.GuardianX
 
-class MySQLDatabaseHandler(private val plugin: GuardianX, config: FileConfiguration) {
+class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfiguration) {
     private var connection: Connection? = null
     private val url: String = "jdbc:mysql://${config.getString("database.sql.host")}:${config.getString("database.sql.port")}/${config.getString("database.sql.dbname")}"
     private val user: String = config.getString("database.sql.username") ?: ""
@@ -131,7 +131,7 @@ class MySQLDatabaseHandler(private val plugin: GuardianX, config: FileConfigurat
         }
     }
 
-    private fun removePunishment(name: String, uuid: String, punishmentType: String) {
+    fun removePunishment(name: String, uuid: String, punishmentType: String) {
         if (!isConnected()) {
             openConnection()
         }

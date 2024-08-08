@@ -3,10 +3,10 @@ import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventOwner
 import org.jetbrains.annotations.NotNull
-import pl.syntaxerr.GuardianX
+import pl.syntaxerr.PunisherX
 
 @Suppress("UnstableApiUsage", "DEPRECATION")
-class GuardianXCommands(private val plugin: GuardianX) : BasicCommand {
+class PunishesXCommands(private val plugin: PunisherX) : BasicCommand {
 
     override fun execute(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>) {
         val pluginMeta = (plugin as LifecycleEventOwner).pluginMeta

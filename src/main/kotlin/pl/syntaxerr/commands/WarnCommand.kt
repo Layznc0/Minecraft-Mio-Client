@@ -12,12 +12,12 @@ import pl.syntaxerr.helpers.TimeHandler
 import pl.syntaxerr.helpers.UUIDManager
 
 @Suppress("UnstableApiUsage")
-class WarnCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : BasicCommand {
+class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : BasicCommand {
 
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
     private val logger = Logger(pluginMetas, debugMode)
-    private val uuidManager = UUIDManager()
+    private val uuidManager = UUIDManager(plugin)
     private val messageHandler = MessageHandler(plugin, pluginMetas)
     private val timeHandler = TimeHandler(plugin.config.getString("language") ?: "PL")
 

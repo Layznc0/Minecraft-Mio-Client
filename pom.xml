@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.syntaxerr</groupId>
-    <artifactId>GuardianX</artifactId>
+    <artifactId>PunisherX</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>GuardianX</name>
+    <name>PunisherX</name>
 
     <properties>
         <java.version>21</java.version>
@@ -53,7 +53,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>pl.syntaxerr.GuardianX</shadedPattern>
+                            <shadedPattern>pl.syntaxerr.PunisherX</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

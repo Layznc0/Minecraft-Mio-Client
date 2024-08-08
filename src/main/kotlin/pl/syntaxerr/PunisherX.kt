@@ -8,15 +8,13 @@ import org.bstats.bukkit.Metrics
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import pl.syntaxerr.base.PunishmentManager
-import pl.syntaxerr.commands.BanCommand
-import pl.syntaxerr.commands.GuardianXCommands
-import pl.syntaxerr.commands.WarnCommand
 import pl.syntaxerr.databases.MySQLDatabaseHandler
+import pl.syntaxerr.base.*
+import pl.syntaxerr.commands.*
 import pl.syntaxerr.helpers.*
 
 @Suppress("UnstableApiUsage")
-class GuardianX : JavaPlugin(), Listener {
+class PunisherX : JavaPlugin(), Listener {
     lateinit var logger: Logger
     private val pluginMetas = this.pluginMeta
     private var config = getConfig()
@@ -42,11 +40,12 @@ class GuardianX : JavaPlugin(), Listener {
         val manager: LifecycleEventManager<Plugin> = this.lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar()
-            commands.register("guardianx", "Komenda pluginu GuardianX. Wpisz /guardianx help aby sprawdzic dostępne komendy", GuardianXCommands(this))
-            commands.register("gnx", "Komenda pluginu GuardianX. Wpisz /gnx help aby sprawdzic dostępne komendy", GuardianXCommands(this))
+            commands.register("PunisherX", "Komenda pluginu PunisherX. Wpisz /PunisherX help aby sprawdzic dostępne komendy", PunishesXCommands(this))
+            commands.register("gnx", "Komenda pluginu PunisherX. Wpisz /gnx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
             commands.register("ban", messageHandler.getMessage("ban", "usage"), BanCommand(this, pluginMetas))
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
+        server.pluginManager.registerEvents(PunishmentChecker(this), this)
         val pluginId = 22860
         Metrics(this, pluginId)
         pluginManager = PluginManager(this)

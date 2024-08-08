@@ -10,7 +10,6 @@ data class PluginInfo(val name: String, val uuid: String, val prior: Int)
 class PluginManager(private val plugin: JavaPlugin) {
 
     private val gson = Gson()
-
     fun fetchPluginsFromExternalSource(url: String): List<PluginInfo> {
         val json = URL(url).readText()
         return gson.fromJson(json, Array<PluginInfo>::class.java).toList()
