@@ -9,8 +9,9 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
+import pl.syntaxerr.GuardianX
 
-class UUIDManager {
+class UUIDManager(private val plugin: GuardianX) {
     private val activeUUIDs: MutableMap<String, String> = HashMap()
 
     fun getUUID(playerName: String): String? {
@@ -48,7 +49,7 @@ class UUIDManager {
                 }
                 uuid
             } else {
-                println("Failed to fetch UUID from API. Response code: ${connection.responseCode}")
+                plugin.logger.err("Failed to fetch UUID from API. Response code: ${connection.responseCode}")
                 null
             }
         } catch (e: Exception) {
