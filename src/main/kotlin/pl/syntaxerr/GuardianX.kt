@@ -8,6 +8,7 @@ import org.bstats.bukkit.Metrics
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import pl.syntaxerr.base.PunishmentManager
 import pl.syntaxerr.commands.BanCommand
 import pl.syntaxerr.commands.GuardianXCommands
 import pl.syntaxerr.commands.WarnCommand
@@ -32,14 +33,12 @@ class GuardianX : JavaPlugin(), Listener {
 
     override fun onEnable() {
         saveDefaultConfig()
-
         messageHandler = MessageHandler(this, pluginMetas)
         timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
         punishmentManager = PunishmentManager()
         databaseHandler = MySQLDatabaseHandler(this, this.config)
         databaseHandler.openConnection()
         databaseHandler.createTables()
-
         val manager: LifecycleEventManager<Plugin> = this.lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar()
@@ -50,19 +49,10 @@ class GuardianX : JavaPlugin(), Listener {
         }
         val pluginId = 22860
         Metrics(this, pluginId)
-        // Inicjalizacja PluginManager z przekazaniem obiektu JavaPlugin
         pluginManager = PluginManager(this)
-
-        // Pobranie listy pluginów z zewnętrznego źródła
         val externalPlugins = pluginManager.fetchPluginsFromExternalSource("https://raw.githubusercontent.com/SyntaxDevTeam/plugins-list/main/plugins.json")
-
-        // Pobranie listy załadowanych pluginów
         val loadedPlugins = pluginManager.fetchLoadedPlugins()
-
-        // Pobranie nazwy pluginu z najwyższym priorytetem
         val highestPriorityPlugin = pluginManager.getHighestPriorityPlugin(externalPlugins, loadedPlugins)
-
-        // Sprawdzenie, czy nazwa pluginu z najwyższym priorytetem to ta sama co aktualnie uruchamiany plugin
         if (highestPriorityPlugin == pluginMeta.name) {
             val syntaxDevTeamPlugins = loadedPlugins.filter { it != pluginMeta.name }
             logger.pluginStart(syntaxDevTeamPlugins)
@@ -79,7 +69,7 @@ class GuardianX : JavaPlugin(), Listener {
             super.reloadConfig()
             onEnable()
         } catch (e: Exception) {
-            logger.err("Wystąpił błąd podczas przełądowania konfiguracji: " + e.message)
+            logger.err(messageHandler.getMessage("error", "reload") + e.message)
         }
     }
 }

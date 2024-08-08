@@ -1,6 +1,7 @@
 error:
   no_permission: "Nie masz uprawnień do tej komendy."
   player_not_found: "Nie znaleziono gracza o nicku {player}."
+  reload: "Wystąpił błąd podczas przełądowania konfiguracji: "
 ban:
   ban: "Zbanowałeś {player} za {reason} na czas {time}"
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
@@ -14,7 +15,6 @@ ban:
     - '&7'
     - '&8Możesz zgłosić swój sprzeciw na:'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
-
 warn:
   warn: Ostrzegłeś {player} za {reason} na czas {time}
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"

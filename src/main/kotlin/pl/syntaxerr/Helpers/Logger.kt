@@ -60,12 +60,12 @@ class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
         clear("&9           __/ |                                                             ")
         clear("&9          |___/                                                              ")
         clear("&9                                                                             ")
-        clear("&9    ... is proud to present and enabled:")
-        clear("&9             &f * &f&l${plName}")
+        clear("&9    ... is proud to present and enable:")
+        clear("&9                   &f * &f&l${plName}")
         for (plugin in pluginsByPriority) {
-            clear("&9             &f * $plugin")
+            clear("&9                   &f * $plugin")
         }
-        clear("&9                   running on Paper and utilizing its optimizations!         ")
+        clear("&9                 utilizing all the optimizations of your server engine!         ")
         clear("")
         clear("&a    Join our Discord! &9&lhttps://discord.gg/Zk6mxv7eMh")
         clear("")

@@ -131,7 +131,7 @@ class MySQLDatabaseHandler(private val plugin: GuardianX, config: FileConfigurat
         }
     }
 
-    fun removePunishment(name: String, uuid: String, punishmentType: String) {
+    private fun removePunishment(name: String, uuid: String, punishmentType: String) {
         if (!isConnected()) {
             openConnection()
         }

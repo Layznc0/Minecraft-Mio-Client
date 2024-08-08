@@ -1,4 +1,4 @@
-package pl.syntaxerr.helpers
+package pl.syntaxerr.base
 
 import pl.syntaxerr.databases.Punishment
 

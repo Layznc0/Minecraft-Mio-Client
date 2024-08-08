@@ -4,8 +4,8 @@ import com.destroystokyo.paper.profile.PlayerProfile
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
-import net.kyori.adventure.text.Component
 import io.papermc.paper.ban.BanListType
+import net.kyori.adventure.text.Component
 import org.bukkit.BanList
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
@@ -22,7 +22,7 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
     private val logger = Logger(pluginMetas, debugMode)
-    private val uuidManager = UUIDManager()
+    private val uuidManager = UUIDManager(plugin)
     private val messageHandler = MessageHandler(plugin, pluginMetas)
     private val timeHandler = TimeHandler(plugin.config.getString("language") ?: "PL")
 
@@ -38,10 +38,8 @@ class BanCommand(private val plugin: GuardianX, pluginMetas: PluginMeta) : Basic
                         stack.sender.sendRichMessage(messageHandler.getMessage("error", "player_not_found", mapOf("player" to player)))
                         return
                     }
-
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
-
                     val punishmentType = "BAN"
                     val start = System.currentTimeMillis().toString()
                     val end = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000).toString() else if (plugin.config.getString("language") == "PL") "nieokreślony" else "undefined"

@@ -1,11 +1,12 @@
 error:
   no_permission: "You do not have permission to use this command."
   player_not_found: "Player with nickname {player} not found."
+  reload: "An error occurred while reloading the configuration: "
 ban:
   ban: "You have banned {player} for {reason} for {time}"
   usage: "Correct usage is: /ban <player> (time) <reason>"
   kick_message:
-    - 'Minecraft Server: Name'
+    - 'Minecraft Server'
     - 'GuardianX &7You are banned'
     - '&7'
     - '&7'
@@ -14,8 +15,6 @@ ban:
     - '&7'
     - '&8Unban application in Discord'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
-
-
 warn:
   warn: "You have warned {player} for {reason} for {time}"
   usage: "Correct usage is: /warn <player> (time) <reason>"
