@@ -40,8 +40,8 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
                   `reason` varchar(255) DEFAULT NULL,
                   `operator` varchar(16) DEFAULT NULL,
                   `punishmentType` varchar(16) DEFAULT NULL,
-                  `start` mediumtext DEFAULT NULL,
-                  `end` mediumtext DEFAULT NULL,
+                  `start` bigint(20) DEFAULT NULL,
+                  `end` bigint(20) DEFAULT NULL,
                   PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
             """.trimIndent()
@@ -54,8 +54,8 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
                   `reason` varchar(255) DEFAULT NULL,
                   `operator` varchar(16) DEFAULT NULL,
                   `punishmentType` varchar(16) DEFAULT NULL,
-                  `start` mediumtext DEFAULT NULL,
-                  `end` mediumtext DEFAULT NULL,
+                  `start` bigint(20) DEFAULT NULL,
+                  `end` bigint(20) DEFAULT NULL,
                   PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
             """.trimIndent()
@@ -138,21 +138,20 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
         if (isConnected()) {
             val query = """
             DELETE FROM `punishments` 
-            WHERE `name` = ? AND `uuid` = ? AND `punishmentType` = ?
+            WHERE `uuid` = ? AND `punishmentType` = ?
         """.trimIndent()
             try {
                 val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
-                preparedStatement.setString(1, name)
-                preparedStatement.setString(2, uuid)
-                preparedStatement.setString(3, punishmentType)
+                preparedStatement.setString(1, uuid)
+                preparedStatement.setString(2, punishmentType)
                 val rowsAffected = preparedStatement.executeUpdate()
                 if (rowsAffected > 0) {
-                    plugin.logger.debug("Punishment of type $punishmentType for player $name removed from the database.")
+                    plugin.logger.debug("Punishment of type $punishmentType for UUID: $uuid removed from the database.")
                 } else {
-                    plugin.logger.warning("No punishment of type $punishmentType found for player $name.")
+                    plugin.logger.warning("No punishment of type $punishmentType found for UUID: $uuid.")
                 }
             } catch (e: SQLException) {
-                plugin.logger.err("Failed to remove punishment of type $punishmentType for player $name. ${e.message}")
+                plugin.logger.err("Failed to remove punishment of type $punishmentType for UUID: $uuid. ${e.message}")
             }
         } else {
             plugin.logger.warning("Failed to reconnect to the database.")
@@ -170,7 +169,7 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
 
     fun getPunishment(uuid: String): Punishment? {
         val statement: Statement? = connection?.createStatement()
-        plugin.logger.info("Wykonywanie zapytania SQL dla UUID: $uuid")
+        plugin.logger.debug("Wykonywanie zapytania SQL dla UUID: $uuid")
         val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$uuid'")
         return if (resultSet != null && resultSet.next()) {
             val type = resultSet.getString("punishmentType")
@@ -179,15 +178,15 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             val end = resultSet.getLong("end")
             val punishment = Punishment(uuid, type, reason, start, end)
             if (plugin.punishmentManager.isPunishmentActive(punishment)) {
-                plugin.logger.info("Kara znaleziona dla UUID: $uuid, typ: $type, powód: $reason, start: $start, koniec: $end")
+                plugin.logger.debug("Kara znaleziona dla UUID: $uuid, typ: $type, powód: $reason, start: $start, koniec: $end")
                 punishment
             } else {
-                plugin.logger.info("Kara dla UUID: $uuid wygasła i została usunięta")
+                plugin.logger.debug("Kara dla UUID: $uuid wygasła i została usunięta")
                 plugin.databaseHandler.removePunishment("", uuid, type)
                 null
             }
         } else {
-            plugin.logger.info("Brak kary dla UUID: $uuid")
+            plugin.logger.debug("Brak kary dla UUID: $uuid")
             null
         }
     }

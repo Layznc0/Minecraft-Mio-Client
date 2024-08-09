@@ -10,7 +10,7 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
 
     @EventHandler
     fun onPlayerPreLogin(event: AsyncPlayerPreLoginEvent) {
-        plugin.logger.info("Sprawdzanie kary dla gracza: ${event.name}")
+        plugin.logger.debug("Sprawdzanie kary dla gracza: ${event.name}")
 
         val uuid = event.uniqueId.toString()
         val punishment = plugin.databaseHandler.getPunishment(uuid)
@@ -18,7 +18,8 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
             if (plugin.punishmentManager.isPunishmentActive(punishment)) {
                 if (punishment.type == "BAN") {
                     val endTime = punishment.end
-                    val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(((endTime - System.currentTimeMillis()) / 1000).toString())
+                    val remainingTime = (endTime - System.currentTimeMillis()) / 1000
+                    val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(remainingTime.toString())
                     val reason = punishment.reason
                     val kickMessages = plugin.messageHandler.getComplexMessage("ban", "kick_message", mapOf("reason" to reason, "time" to duration))
                     val kickMessage = Component.text()
@@ -28,11 +29,11 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                     }
                     event.loginResult = AsyncPlayerPreLoginEvent.Result.KICK_BANNED
                     event.kickMessage(kickMessage.build())
-                    plugin.logger.info("Gracz ${event.name} został wyrzucony z powodu: $reason")
+                    plugin.logger.debug("Gracz ${event.name} został wyrzucony z powodu: $reason")
                 }
             } else {
                 plugin.databaseHandler.removePunishment("", uuid, punishment.type)
-                plugin.logger.info("Kara dla UUID: $uuid wygasła i została usunięta")
+                plugin.logger.debug("Kara dla UUID: $uuid wygasła i została usunięta")
             }
         }
     }

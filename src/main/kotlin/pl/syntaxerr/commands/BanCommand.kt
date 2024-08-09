@@ -1,12 +1,9 @@
 package pl.syntaxerr.commands
 
-import com.destroystokyo.paper.profile.PlayerProfile
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
-import io.papermc.paper.ban.BanListType
 import net.kyori.adventure.text.Component
-import org.bukkit.BanList
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import pl.syntaxerr.PunisherX
@@ -14,7 +11,6 @@ import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.helpers.MessageHandler
 import pl.syntaxerr.helpers.TimeHandler
 import pl.syntaxerr.helpers.UUIDManager
-import java.util.*
 
 @Suppress("UnstableApiUsage")
 class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : BasicCommand {
@@ -28,7 +24,7 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
 
     override fun execute(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>) {
         if (args.isNotEmpty()) {
-            if (stack.sender.hasPermission("GuardianX.ban")) {
+            if (stack.sender.hasPermission("PunisherX.ban")) {
                 if (args.size < 2) {
                     stack.sender.sendRichMessage(messageHandler.getMessage("ban", "usage"))
                 } else {
@@ -46,7 +42,7 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
 
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
-/*
+/*                  TODO: Dodać jako awaryjna metoda w przypadku problemu z łacznością z bazą danych
                     val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
                     val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanListType.PROFILE)
                     val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null

@@ -40,8 +40,8 @@ class PunisherX : JavaPlugin(), Listener {
         val manager: LifecycleEventManager<Plugin> = this.lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar()
-            commands.register("PunisherX", "Komenda pluginu PunisherX. Wpisz /PunisherX help aby sprawdzic dostępne komendy", PunishesXCommands(this))
-            commands.register("gnx", "Komenda pluginu PunisherX. Wpisz /gnx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
+            commands.register("punisherx", "Komenda pluginu PunisherX. Wpisz /punisherx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
+            commands.register("prx", "Komenda pluginu PunisherX. Wpisz /prx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
             commands.register("ban", messageHandler.getMessage("ban", "usage"), BanCommand(this, pluginMetas))
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
@@ -66,7 +66,7 @@ class PunisherX : JavaPlugin(), Listener {
     fun restartGuardianTask() {
         try {
             super.reloadConfig()
-            onEnable()
+            messageHandler.reloadMessages()
         } catch (e: Exception) {
             logger.err(messageHandler.getMessage("error", "reload") + e.message)
         }

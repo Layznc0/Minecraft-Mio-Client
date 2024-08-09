@@ -14,21 +14,21 @@ class PunishesXCommands(private val plugin: PunisherX) : BasicCommand {
         if (args.isNotEmpty()) {
             when {
                 args[0].equals("help", ignoreCase = true) -> {
-                    if (stack.sender.hasPermission("GuardianX.help")) {
-                        stack.sender.sendRichMessage("<gray>#######################################\n#\n#  <gold>Dostępne komendy dla " + pluginMeta.name + ":\n<gray>#\n#  <gold>/guardianx help <gray>- <white>Wyświetla ten monit.\n<gray>#  <gold>/guardianx version <gray>- <white>Pokazuje info pluginu. \n<gray>#  <gold>/guardianx reload <gray>- <white>Przeładowuje plik konfiguracyjny\n<gray>#\n#######################################")
+                    if (stack.sender.hasPermission("punisherx.help")) {
+                        stack.sender.sendRichMessage("<gray>#######################################\n#\n#  <gold>Dostępne komendy dla " + pluginMeta.name + ":\n<gray>#\n#  <gold>/punisherx help <gray>- <white>Wyświetla ten monit.\n<gray>#  <gold>/punisherx version <gray>- <white>Pokazuje info pluginu. \n<gray>#  <gold>/punisherx reload <gray>- <white>Przeładowuje plik konfiguracyjny\n<gray>#\n#######################################")
                     } else {
                         stack.sender.sendRichMessage("<red>Nie masz uprawnień do tej komendy.</red>")
                     }
                 }
                 args[0].equals("version", ignoreCase = true) -> {
-                    if (stack.sender.hasPermission("GuardianX.version")) {
+                    if (stack.sender.hasPermission("punisherx.version")) {
                         stack.sender.sendRichMessage("<gray>#######################################\n#\n#   <gold>→ <bold>" + pluginMeta.name + "</bold> ←\n<gray>#   <white>Autor: <bold><gold>" + pdf.authors + "</gold></bold>\n<gray>#   <white>WWW: <bold><gold><click:open_url:'" + pdf.website + "'>"  + pdf.website + "</click></gold></bold>\n<gray>#   <white>Wersja: <bold><gold>" + pluginMeta.version + "</gold></bold><gray>\n#\n#######################################")
                     } else {
                         stack.sender.sendRichMessage("<red>Nie masz uprawnień do tej komendy.</red>")
                     }
                 }
                 args[0].equals("reload", ignoreCase = true) -> {
-                    if (stack.sender.hasPermission("GuardianX.reload")) {
+                    if (stack.sender.hasPermission("punisherx.reload")) {
                         plugin.restartGuardianTask()
                         stack.sender.sendRichMessage("<green>Plik konfiguracyjny został przeładowany.</green>")
                     } else {
@@ -37,7 +37,7 @@ class PunishesXCommands(private val plugin: PunisherX) : BasicCommand {
                 }
             }
         } else {
-            stack.sender.sendRichMessage("<green>Wpisz </green><gold>/guardianx help</gold> <green>aby sprawdzić dostępne komendy</green>")
+            stack.sender.sendRichMessage("<green>Wpisz </green><gold>/punisherx help</gold> <green>aby sprawdzić dostępne komendy</green>")
         }
     }
 }
