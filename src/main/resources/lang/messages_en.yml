@@ -1,6 +1,7 @@
 error:
   no_permission: "You do not have permission to use this command."
   player_not_found: "Player with nickname {player} not found."
+  player_ip_not_found: "Player IP not found for {player}, please enter the IP address manually."
   reload: "An error occurred while reloading the configuration: "
 ban:
   ban: "You have banned {player} for {reason} for {time}"
@@ -16,6 +17,32 @@ ban:
     - '&8Unban application in Discord'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
   suggest: "no reason"
+  reasons:
+    - "Cheating"
+    - "Griefing"
+    - "Spamming"
+    - "Abusive Language"
+  usage_unban: "Correct usage is: /unban <player>"
+  unban: "Player {player} has unbanned"
+banip:
+  ban: "Your IP has been banned for {reason} for {time}."
+  usage: "Correct usage is: /banip <player> (time) <reason>"
+  kick_message:
+    - 'Minecraft Server'
+    - 'GuardianX &cYour IP has been banned'
+    - '&7'
+    - '&7'
+    - "&cReason &8» &7{reason}"
+    - "&cDuration &8» &7{time}"
+    - '&7'
+    - '&8Unban application in Discord'
+    - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+  suggest: "no reason"
+  reasons:
+    - "Cheating"
+    - "Griefing"
+    - "Spamming"
+    - "Abusive Language"
 warn:
   warn: "You have warned {player} for {reason} for {time}"
   usage: "Correct usage is: /warn <player> (time) <reason>"

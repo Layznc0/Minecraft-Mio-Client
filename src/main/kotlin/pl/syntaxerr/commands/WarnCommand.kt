@@ -37,7 +37,7 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
 
-                    val punishmentType = "BAN"
+                    val punishmentType = "WARN"
                     val start = System.currentTimeMillis().toString()
                     val end = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000).toString() else "nieokreślony"
 
@@ -47,7 +47,7 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                     stack.sender.sendRichMessage(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     val message = Component.text(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.info("Player " + player + "(" + uuid + ") has banned for " + reason + " to time " + timeHandler.formatTime(gtime))
+                    logger.info("Player " + player + "(" + uuid + ") has warned for " + reason + " to time " + timeHandler.formatTime(gtime))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))

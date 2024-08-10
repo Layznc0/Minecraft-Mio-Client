@@ -10,47 +10,41 @@ import pl.syntaxerr.PunisherX
 import pl.syntaxerr.helpers.Logger
 import pl.syntaxerr.helpers.MessageHandler
 import pl.syntaxerr.helpers.TimeHandler
-import pl.syntaxerr.helpers.UUIDManager
+import pl.syntaxerr.helpers.IpCache
 
 @Suppress("UnstableApiUsage")
-class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : BasicCommand {
+class BanIpCommand(private val plugin: PunisherX, pluginMetas: PluginMeta, private val ipCache: IpCache) : BasicCommand {
 
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
     private val logger = Logger(pluginMetas, debugMode)
-    private val uuidManager = UUIDManager(plugin)
     private val messageHandler = MessageHandler(plugin, pluginMetas)
     private val timeHandler = TimeHandler(plugin.config.getString("language") ?: "PL")
 
     override fun execute(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>) {
         if (args.isNotEmpty()) {
-            if (stack.sender.hasPermission("punisherx.ban")) {
+            if (stack.sender.hasPermission("punisherx.banip")) {
                 if (args.size < 2) {
                     stack.sender.sendRichMessage(messageHandler.getMessage("ban", "usage"))
                 } else {
                     val player = args[0]
-                    val uuid = uuidManager.getUUID(player)
-                    if (uuid == null) {
-                        stack.sender.sendRichMessage(messageHandler.getMessage("error", "player_not_found", mapOf("player" to player)))
+                    val ip = ipCache.getIp(player) // Pobieranie IP z cache'u
+                    if (ip == null) {
+                        stack.sender.sendRichMessage(messageHandler.getMessage("error", "player_ip_not_found", mapOf("player" to player)))
                         return
                     }
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
-                    val punishmentType = "BAN"
+                    val punishmentType = "BANIP"
                     val start = System.currentTimeMillis().toString()
                     val end = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000).toString() else if (plugin.config.getString("language") == "PL") "nieokreślony" else "undefined"
 
-                    plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
-                    plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
-/*                  TODO: Dodać jako awaryjna metoda w przypadku problemu z łacznością z bazą danych
-                    val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
-                    val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanListType.PROFILE)
-                    val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
-                    banList.addBan(playerProfile, reason, banEndDate, stack.sender.name)
-*/
+                    plugin.databaseHandler.addPunishment(player, ip, reason, stack.sender.name, punishmentType, start, end)
+                    plugin.databaseHandler.addPunishmentHistory(player, ip, reason, stack.sender.name, punishmentType, start, end)
+
                     val targetPlayer = Bukkit.getPlayer(player)
                     if (targetPlayer != null) {
-                        val kickMessages = messageHandler.getComplexMessage("ban", "kick_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))
+                        val kickMessages = messageHandler.getComplexMessage("banip", "kick_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))
                         val kickMessage = Component.text()
                         kickMessages.forEach { line ->
                             kickMessage.append(line)
@@ -59,23 +53,24 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
                         targetPlayer.kick(kickMessage.build())
                     }
 
-                    stack.sender.sendRichMessage(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
-                    val message = Component.text(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
+                    stack.sender.sendRichMessage(messageHandler.getMessage("banip", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
+                    val message = Component.text(messageHandler.getMessage("banip", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.info("Player " + player + "(" + uuid + ") has banned for " + reason + " to time " + timeHandler.formatTime(gtime))
+                    logger.info("IP: " + ip + " (" + player + ") has banned for " + reason + " to time " + timeHandler.formatTime(gtime))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
             }
         } else {
-            stack.sender.sendRichMessage(messageHandler.getMessage("ban", "usage"))
+            stack.sender.sendRichMessage(messageHandler.getMessage("banip", "usage"))
         }
     }
+
     override fun suggest(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>): List<String> {
         return when (args.size) {
             1 -> plugin.server.onlinePlayers.map { it.name }
             2 -> listOf("1s", "1m", "1h", "1d")
-            3 -> messageHandler.getReasons("ban", "reasons")
+            3 -> messageHandler.getReasons("banip", "reasons")
             else -> emptyList()
         }
     }

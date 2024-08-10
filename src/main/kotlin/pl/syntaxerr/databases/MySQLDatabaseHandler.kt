@@ -131,7 +131,7 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
         }
     }
 
-    fun removePunishment(name: String, uuid: String, punishmentType: String) {
+    fun removePunishment(uuid: String, punishmentType: String) {
         if (!isConnected()) {
             openConnection()
         }
@@ -182,7 +182,7 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
                 punishment
             } else {
                 plugin.logger.debug("Kara dla UUID: $uuid wygasła i została usunięta")
-                plugin.databaseHandler.removePunishment("", uuid, type)
+                plugin.databaseHandler.removePunishment(uuid, type)
                 null
             }
         } else {

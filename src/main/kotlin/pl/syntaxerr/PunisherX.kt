@@ -24,6 +24,7 @@ class PunisherX : JavaPlugin(), Listener {
     lateinit var timeHandler: TimeHandler
     lateinit var punishmentManager: PunishmentManager
     private lateinit var pluginManager: PluginManager
+    private lateinit var ipCache: IpCache
 
     override fun onLoad() {
         logger = Logger(pluginMetas, debugMode)
@@ -37,15 +38,19 @@ class PunisherX : JavaPlugin(), Listener {
         databaseHandler = MySQLDatabaseHandler(this, this.config)
         databaseHandler.openConnection()
         databaseHandler.createTables()
+        ipCache = IpCache()
+        server.pluginManager.registerEvents(ipCache, this)
         val manager: LifecycleEventManager<Plugin> = this.lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar()
             commands.register("punisherx", "Komenda pluginu PunisherX. Wpisz /punisherx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
             commands.register("prx", "Komenda pluginu PunisherX. Wpisz /prx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
             commands.register("ban", messageHandler.getMessage("ban", "usage"), BanCommand(this, pluginMetas))
+            commands.register("banip", messageHandler.getMessage("banip", "usage"), BanIpCommand(this, pluginMetas, ipCache))
+            commands.register("unban", messageHandler.getMessage("ban", "usage"), UnBanCommand(this, pluginMetas))
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
-        server.pluginManager.registerEvents(PunishmentChecker(this), this)
+        server.pluginManager.registerEvents(PunishmentChecker(this, ipCache), this)
         val pluginId = 22952
         Metrics(this, pluginId)
         pluginManager = PluginManager(this)

@@ -66,4 +66,7 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
             }
         }
     }
+    fun getReasons(category: String, key: String): List<String> {
+        return messages.getStringList("$category.$key")
+    }
 }

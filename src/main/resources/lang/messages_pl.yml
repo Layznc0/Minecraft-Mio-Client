@@ -1,6 +1,7 @@
 error:
   no_permission: "Nie masz uprawnień do tej komendy."
   player_not_found: "Nie znaleziono gracza o nicku {player}."
+  player_ip_not_found: "Nieznaleziono IP gracza {player}, wpisz ręcznie adres IP"
   reload: "Wystąpił błąd podczas przełądowania konfiguracji: "
 ban:
   ban: "Zbanowałeś {player} za {reason} na czas {time}"
@@ -15,7 +16,33 @@ ban:
     - '&7'
     - '&8Możesz zgłosić swój sprzeciw na:'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
-  suggest: "bez powodu"
+  no_reasons: "bez powodu"
+  reasons:
+    - "Oszystwo"
+    - "Griefing"
+    - "Spamowanie"
+    - "Wulgarny język"
+  usage_unban: "Poprawne użycie to: /ban <player>"
+  unban: "Gracz {player} został odbanowany"
+banip:
+  ban: "Twoje IP zostało zbanowane za {reason} na czas {time}"
+  usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
+  kick_message:
+    - 'Nazwa serwera'
+    - 'GuardianX &8» &7Twoje IP zostało zbanowane!'
+    - '&7'
+    - '&7'
+    - "&cPowód &8» &7{reason}"
+    - "&cNa czas &8» &7{time}"
+    - '&7'
+    - '&8Możesz zgłosić swój sprzeciw na:'
+    - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+  no_reasons: "bez powodu"
+  reasons:
+    - "Oszystwo"
+    - "Griefing"
+    - "Spamowanie"
+    - "Wulgarny język"
 warn:
   warn: Ostrzegłeś {player} za {reason} na czas {time}
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
