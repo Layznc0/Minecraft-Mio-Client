@@ -17,6 +17,16 @@ class TimeHandler(private val language: String) {
 
     fun formatTime(time: String?): String {
         if (time == null) return if (language == "PL") "nieokreślony" else "undefined"
+
+        // Sprawdź, czy czas jest liczbą całkowitą
+        val isNumeric = time.all { it.isDigit() }
+        if (isNumeric) {
+            val seconds = time.toLong()
+            val minutes = seconds / 60
+            val remainingSeconds = seconds % 60
+            return "$minutes ${if (language == "PL") "minut" else "minutes"}, $remainingSeconds ${if (language == "PL") "sekund" else "seconds"}"
+        }
+
         val amount = time.substring(0, time.length - 1)
         val unit = time.last()
 
@@ -28,4 +38,5 @@ class TimeHandler(private val language: String) {
             else -> if (language == "PL") "nieokreślony" else "undefined"
         }
     }
+
 }

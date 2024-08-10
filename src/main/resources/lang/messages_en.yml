@@ -15,6 +15,7 @@ ban:
     - '&7'
     - '&8Unban application in Discord'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+  suggest: "no reason"
 warn:
   warn: "You have warned {player} for {reason} for {time}"
   usage: "Correct usage is: /warn <player> (time) <reason>"

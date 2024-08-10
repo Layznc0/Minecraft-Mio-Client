@@ -24,7 +24,7 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
 
     override fun execute(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>) {
         if (args.isNotEmpty()) {
-            if (stack.sender.hasPermission("PunisherX.ban")) {
+            if (stack.sender.hasPermission("punisherx.ban")) {
                 if (args.size < 2) {
                     stack.sender.sendRichMessage(messageHandler.getMessage("ban", "usage"))
                 } else {
@@ -69,6 +69,14 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
             }
         } else {
             stack.sender.sendRichMessage(messageHandler.getMessage("ban", "usage"))
+        }
+    }
+    override fun suggest(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>): List<String> {
+        return when (args.size) {
+            1 -> plugin.server.onlinePlayers.map { it.name }
+            2 -> listOf("1s", "1m", "1h", "1d", messageHandler.getMessage("ban", "suggest"))
+            3 -> listOf(messageHandler.getMessage("ban", "suggest"))
+            else -> emptyList()
         }
     }
 }

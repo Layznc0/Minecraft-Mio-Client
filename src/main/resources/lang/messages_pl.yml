@@ -15,6 +15,7 @@ ban:
     - '&7'
     - '&8Możesz zgłosić swój sprzeciw na:'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+  suggest: "bez powodu"
 warn:
   warn: Ostrzegłeś {player} za {reason} na czas {time}
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"

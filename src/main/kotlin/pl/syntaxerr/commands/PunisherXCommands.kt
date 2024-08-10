@@ -40,4 +40,10 @@ class PunishesXCommands(private val plugin: PunisherX) : BasicCommand {
             stack.sender.sendRichMessage("<green>Wpisz </green><gold>/punisherx help</gold> <green>aby sprawdzić dostępne komendy</green>")
         }
     }
+    override fun suggest(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>): List<String> {
+        return when (args.size) {
+            1 -> listOf("help", "version", "reload")
+            else -> emptyList()
+        }
+    }
 }
