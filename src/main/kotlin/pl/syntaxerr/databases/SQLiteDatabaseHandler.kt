@@ -6,21 +6,23 @@ import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.ResultSet
 import java.sql.Statement
-import org.bukkit.configuration.file.FileConfiguration
 import pl.syntaxerr.PunisherX
+import java.io.File
 
-class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfiguration) : DatabaseHandler {
+class SQLiteDatabaseHandler(private val plugin: PunisherX) : DatabaseHandler {
     private var connection: Connection? = null
-    private val url: String = "jdbc:mysql://${config.getString("database.sql.host")}:${config.getString("database.sql.port")}/${config.getString("database.sql.dbname")}"
-    private val user: String = config.getString("database.sql.username") ?: ""
-    private val password: String = config.getString("database.sql.password") ?: ""
+    private val dbFile: File = File(plugin.dataFolder, "database.db")
 
     override fun openConnection() {
         try {
-            connection = DriverManager.getConnection(url, user, password)
-            plugin.logger.debug("Connection to the database established.")
+            if (!dbFile.exists()) {
+                dbFile.parentFile.mkdirs()
+                dbFile.createNewFile()
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:${dbFile.absolutePath}")
+            plugin.logger.debug("Connection to the SQLite database established.")
         } catch (e: SQLException) {
-            plugin.logger.err("Failed to establish connection to the database. ${e.message}")
+            plugin.logger.err("Failed to establish connection to the SQLite database. ${e.message}")
         }
     }
 
@@ -34,30 +36,28 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
                 val statement = connection!!.createStatement()
                 val createPunishmentsTable = """
                 CREATE TABLE IF NOT EXISTS `punishments` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `name` varchar(32) DEFAULT NULL,
-                  `uuid` varchar(36) DEFAULT NULL,
-                  `reason` varchar(255) DEFAULT NULL,
-                  `operator` varchar(16) DEFAULT NULL,
-                  `punishmentType` varchar(16) DEFAULT NULL,
-                  `start` bigint(20) DEFAULT NULL,
-                  `end` varchar(32) DEFAULT NULL,
-                  PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+                  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                  `name` TEXT,
+                  `uuid` TEXT,
+                  `reason` TEXT,
+                  `operator` TEXT,
+                  `punishmentType` TEXT,
+                  `start` INTEGER,
+                  `end` TEXT
+                );
             """.trimIndent()
 
                 val createPunishmentHistoryTable = """
                 CREATE TABLE IF NOT EXISTS `punishmenthistory` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `name` varchar(32) DEFAULT NULL,
-                  `uuid` varchar(36) DEFAULT NULL,
-                  `reason` varchar(255) DEFAULT NULL,
-                  `operator` varchar(16) DEFAULT NULL,
-                  `punishmentType` varchar(16) DEFAULT NULL,
-                  `start` bigint(20) DEFAULT NULL,
-                  `end` varchar(32) DEFAULT NULL,
-                  PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+                  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                  `name` TEXT,
+                  `uuid` TEXT,
+                  `reason` TEXT,
+                  `operator` TEXT,
+                  `punishmentType` TEXT,
+                  `start` INTEGER,
+                  `end` TEXT
+                );
             """.trimIndent()
 
                 statement.executeUpdate(createPunishmentsTable)
@@ -70,7 +70,6 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             plugin.logger.warning("Not connected to the database.")
         }
     }
-
     override fun addPunishment(name: String, uuid: String, reason: String, operator: String, punishmentType: String, start: Long, end: Long) {
         if (!isConnected()) {
             openConnection()
@@ -78,9 +77,9 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
 
         if (isConnected()) {
             val query = """
-            INSERT INTO `punishments` (name, uuid, reason, operator, punishmentType, start, end)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """.trimIndent()
+        INSERT INTO `punishments` (name, uuid, reason, operator, punishmentType, start, end)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """.trimIndent()
 
             try {
                 val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
@@ -108,9 +107,9 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
 
         if (isConnected()) {
             val query = """
-            INSERT INTO `punishmenthistory` (name, uuid, reason, operator, punishmentType, start, end)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """.trimIndent()
+        INSERT INTO `punishmenthistory` (name, uuid, reason, operator, punishmentType, start, end)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """.trimIndent()
 
             try {
                 val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
@@ -137,9 +136,9 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
         }
         if (isConnected()) {
             val query = """
-            DELETE FROM `punishments` 
-            WHERE `uuid` = ? AND `punishmentType` = ?
-        """.trimIndent()
+        DELETE FROM `punishments` 
+        WHERE `uuid` = ? AND `punishmentType` = ?
+    """.trimIndent()
             try {
                 val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
                 preparedStatement.setString(1, uuid)
@@ -157,17 +156,20 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             plugin.logger.warning("Failed to reconnect to the database.")
         }
     }
-
     override fun closeConnection() {
         try {
             connection?.close()
-            plugin.logger.info("Connection to the database closed.")
+            plugin.logger.info("Connection to the SQLite database closed.")
         } catch (e: SQLException) {
-            plugin.logger.err("Failed to close the connection to the database. ${e.message}")
+            plugin.logger.err("Failed to close the connection to the SQLite database. ${e.message}")
         }
     }
 
     override fun getPunishment(uuid: String): PunishmentData? {
+        if (!isConnected()) {
+            openConnection()
+        }
+
         val statement: Statement? = connection?.createStatement()
         plugin.logger.debug("Wykonywanie zapytania SQL dla UUID: $uuid")
         val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$uuid'")
@@ -182,7 +184,7 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
                 punishment
             } else {
                 plugin.logger.debug("Kara dla UUID: $uuid wygasła i została usunięta")
-                plugin.databaseHandler.removePunishment(uuid, type)
+                removePunishment(uuid, type)
                 null
             }
         } else {

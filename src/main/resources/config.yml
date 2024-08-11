@@ -1,8 +1,8 @@
 # Ustawienia niezbędnyhc informacji do łaczenia z bazą danych
 database:
-  # Dostępne opcje: mariadb, mysql, sqlite, postgresql //TODO: dodać obsługę H2 lub YAML
+  # Dostępne opcje: mariadb, mysql, sqlite //TODO: dodać obsługę H2 lub YAML
   type: "sqlite"
-  # Dane do łączenia się z bazą dla MariaDB/MySQL/PostgreSQL
+  # Dane do łączenia się z bazą danych dla serwera MariaDB/MySQL
   sql:
     host: "localhost"
     port: 3306

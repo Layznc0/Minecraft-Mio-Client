@@ -9,6 +9,8 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import pl.syntaxerr.databases.MySQLDatabaseHandler
+import pl.syntaxerr.databases.SQLiteDatabaseHandler
+import pl.syntaxerr.databases.DatabaseHandler
 import pl.syntaxerr.basic.*
 import pl.syntaxerr.commands.*
 import pl.syntaxerr.helpers.*
@@ -19,7 +21,7 @@ class PunisherX : JavaPlugin(), Listener {
     private val pluginMetas = this.pluginMeta
     private var config = getConfig()
     private var debugMode = config.getBoolean("debug")
-    lateinit var databaseHandler: MySQLDatabaseHandler
+    lateinit var databaseHandler: DatabaseHandler
     lateinit var messageHandler: MessageHandler
     lateinit var timeHandler: TimeHandler
     lateinit var punishmentManager: PunishmentManager
@@ -35,7 +37,20 @@ class PunisherX : JavaPlugin(), Listener {
         messageHandler = MessageHandler(this, pluginMetas)
         timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
         punishmentManager = PunishmentManager()
-        databaseHandler = MySQLDatabaseHandler(this, this.config)
+
+        databaseHandler = when (config.getString("database.type")?.toLowerCase()) {
+            "mysql", "mariadb" -> {
+                MySQLDatabaseHandler(this, this.config)
+            }
+            "sqlite" -> {
+                SQLiteDatabaseHandler(this)
+            }
+            else -> {
+                logger.warning("Nieprawidłowy typ bazy danych w konfiguracji. Używanie domyślnej bazy danych SQLite.")
+                SQLiteDatabaseHandler(this)
+            }
+        }
+
         databaseHandler.openConnection()
         databaseHandler.createTables()
         ipCache = IpCache()
@@ -67,6 +82,7 @@ class PunisherX : JavaPlugin(), Listener {
         databaseHandler.closeConnection()
         AsyncChatEvent.getHandlerList().unregister(this as Plugin)
     }
+
 
     fun restartGuardianTask() {
         try {
