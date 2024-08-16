@@ -1,9 +1,10 @@
-package pl.syntaxerr.commands
+package pl.syntaxdevteam.commands
+
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventOwner
 import org.jetbrains.annotations.NotNull
-import pl.syntaxerr.PunisherX
+import pl.syntaxdevteam.PunisherX
 
 @Suppress("UnstableApiUsage", "DEPRECATION")
 class PunishesXCommands(private val plugin: PunisherX) : BasicCommand {
@@ -15,14 +16,14 @@ class PunishesXCommands(private val plugin: PunisherX) : BasicCommand {
             when {
                 args[0].equals("help", ignoreCase = true) -> {
                     if (stack.sender.hasPermission("punisherx.help")) {
-                        stack.sender.sendRichMessage("<gray>#######################################\n#\n#  <gold>Dostępne komendy dla " + pluginMeta.name + ":\n<gray>#\n#  <gold>/punisherx help <gray>- <white>Wyświetla ten monit.\n<gray>#  <gold>/punisherx version <gray>- <white>Pokazuje info pluginu. \n<gray>#  <gold>/punisherx reload <gray>- <white>Przeładowuje plik konfiguracyjny\n<gray>#\n#######################################")
+                        stack.sender.sendRichMessage("\n<gray>#######################################\n#\n#  <gold>Dostępne komendy dla " + pluginMeta.name + ":\n<gray>#\n#  <gold>/punisherx help <gray>- <white>Wyświetla ten monit. \n<gray>#  <gold>/punisherx version <gray>- <white>Pokazuje info pluginu. \n<gray>#  <gold>/punisherx reload <gray>- <white>Przeładowuje plik konfiguracyjny\n<gray>#\n#######################################")
                     } else {
                         stack.sender.sendRichMessage("<red>Nie masz uprawnień do tej komendy.</red>")
                     }
                 }
                 args[0].equals("version", ignoreCase = true) -> {
                     if (stack.sender.hasPermission("punisherx.version")) {
-                        stack.sender.sendRichMessage("<gray>#######################################\n#\n#   <gold>→ <bold>" + pluginMeta.name + "</bold> ←\n<gray>#   <white>Autor: <bold><gold>" + pdf.authors + "</gold></bold>\n<gray>#   <white>WWW: <bold><gold><click:open_url:'" + pdf.website + "'>"  + pdf.website + "</click></gold></bold>\n<gray>#   <white>Wersja: <bold><gold>" + pluginMeta.version + "</gold></bold><gray>\n#\n#######################################")
+                        stack.sender.sendRichMessage("\n<gray>#######################################\n#\n#   <gold>→ <bold>" + pluginMeta.name + "</bold> ←\n<gray>#   <white>Autor: <bold><gold>" + pdf.authors + "</gold></bold>\n<gray>#   <white>WWW: <bold><gold><click:open_url:'" + pdf.website + "'>"  + pdf.website + "</click></gold></bold>\n<gray>#   <white>Wersja: <bold><gold>" + pluginMeta.version + "</gold></bold><gray>\n#\n#######################################")
                     } else {
                         stack.sender.sendRichMessage("<red>Nie masz uprawnień do tej komendy.</red>")
                     }

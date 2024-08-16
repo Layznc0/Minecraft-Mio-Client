@@ -1,49 +1,49 @@
-package pl.syntaxerr.helpers
+package pl.syntaxdevteam.helpers
 
 import io.papermc.paper.plugin.configuration.PluginMeta
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+
 
 @Suppress("UnstableApiUsage")
 class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
     private val plName = pluginMetas.name
 
     private fun clear(s: String?) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', s!!))
+        Bukkit.getConsoleSender().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(s!!))
     }
 
     fun success(s: String) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[$plName] &a&l$s&r"))
+        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] ").color(NamedTextColor.GREEN).append(Component.text(s).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD)))
     }
 
     fun info(s: String) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[$plName] $s"))
+        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] $s"))
     }
 
     fun warning(s: String) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[$plName] &6$s&r"))
+        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] ").color(NamedTextColor.GOLD).append(Component.text(s).color(NamedTextColor.GOLD)))
     }
 
     fun err(s: String) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[$plName] &c$s&r"))
+        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] ").color(NamedTextColor.RED).append(Component.text(s).color(NamedTextColor.RED)))
     }
 
     fun severe(s: String) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[$plName] &c&l$s&r"))
+        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] ").color(NamedTextColor.RED).append(Component.text(s).color(NamedTextColor.RED).decorate(TextDecoration.BOLD)))
     }
 
     fun log(s: String) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[$plName] $s"))
+        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] $s"))
     }
 
     fun debug(s: String) {
         if (debugMode) {
-            Bukkit.getConsoleSender().sendMessage(
-                ChatColor.translateAlternateColorCodes(
-                    '&',
-                    "[$plName] [DEBUG] &e&l$s"
-                )
-            )
+            Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] [DEBUG] ").color(NamedTextColor.YELLOW).append(Component.text(s).color(NamedTextColor.YELLOW).decorate(
+                TextDecoration.BOLD)))
         }
     }
 

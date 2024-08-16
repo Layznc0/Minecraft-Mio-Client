@@ -1,4 +1,4 @@
-package pl.syntaxerr.helpers
+package pl.syntaxdevteam.helpers
 
 import com.google.gson.Gson
 import org.bukkit.plugin.java.JavaPlugin

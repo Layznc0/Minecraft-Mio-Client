@@ -1,4 +1,4 @@
-package pl.syntaxerr.helpers
+package pl.syntaxdevteam.helpers
 
 class TimeHandler(private val language: String) {
 

@@ -1,4 +1,4 @@
-package pl.syntaxerr.databases
+package pl.syntaxdevteam.databases
 
 import java.sql.Connection
 import java.sql.DriverManager
@@ -7,7 +7,7 @@ import java.sql.SQLException
 import java.sql.ResultSet
 import java.sql.Statement
 import org.bukkit.configuration.file.FileConfiguration
-import pl.syntaxerr.PunisherX
+import pl.syntaxdevteam.PunisherX
 
 class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfiguration) : DatabaseHandler {
     private var connection: Connection? = null
@@ -168,6 +168,10 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
     }
 
     override fun getPunishment(uuid: String): PunishmentData? {
+        if (!isConnected()) {
+            openConnection()
+        }
+
         val statement: Statement? = connection?.createStatement()
         plugin.logger.debug("Wykonywanie zapytania SQL dla UUID: $uuid")
         val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$uuid'")
@@ -182,7 +186,7 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
                 punishment
             } else {
                 plugin.logger.debug("Kara dla UUID: $uuid wygasła i została usunięta")
-                plugin.databaseHandler.removePunishment(uuid, type)
+                removePunishment(uuid, type)
                 null
             }
         } else {

@@ -1,14 +1,14 @@
-package pl.syntaxerr.commands
+package pl.syntaxdevteam.commands
 
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.NotNull
-import pl.syntaxerr.PunisherX
-import pl.syntaxerr.helpers.Logger
-import pl.syntaxerr.helpers.MessageHandler
-import pl.syntaxerr.helpers.UUIDManager
+import pl.syntaxdevteam.PunisherX
+import pl.syntaxdevteam.helpers.Logger
+import pl.syntaxdevteam.helpers.MessageHandler
+import pl.syntaxdevteam.helpers.UUIDManager
 
 @Suppress("UnstableApiUsage")
 class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : BasicCommand {

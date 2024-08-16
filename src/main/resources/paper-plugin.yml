@@ -1,6 +1,6 @@
 name: PunisherX
-version: '${project.version}'
-main: pl.syntaxerr.PunisherX
+version: '${version}'
+main: pl.syntaxdevteam.PunisherX
 api-version: '1.21'
 authors: [SyntaxDevTeam]
 description: System kar serwera

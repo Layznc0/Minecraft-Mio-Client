@@ -1,0 +1,24 @@
+# Ustawienia niezbędnyhc informacji do łaczenia z bazą danych
+database:
+  # Dostępne opcje: mariadb, mysql, sqlite //TODO: dodać obsługę H2 lub YAML
+  type: "sqlite"
+  # Dane do łączenia się z bazą danych dla serwera MariaDB/MySQL
+  sql:
+    host: "localhost"
+    port: 3306
+    dbname: "my_database"
+    username: "user"
+    password: "password"
+# Wy6bór języka pluginu. Możliwe wartości: "PL", "EN"
+language: "PL"
+
+# Ustawienia sprawdzania i automatycznej aktualizacji
+checkForUpdates: true
+autoDownloadUpdates: false
+
+# Tryb debugowania ustawiony na true daje więcej opisów działań w konsoli
+debug: false
+
+# Czy bStats powinien być włączony? Zalecane ustawienie: true
+bStats:
+  enabled: true

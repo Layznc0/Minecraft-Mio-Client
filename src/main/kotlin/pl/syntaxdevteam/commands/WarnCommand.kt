@@ -1,15 +1,15 @@
-package pl.syntaxerr.commands
+package pl.syntaxdevteam.commands
 
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.NotNull
-import pl.syntaxerr.PunisherX
-import pl.syntaxerr.helpers.Logger
-import pl.syntaxerr.helpers.MessageHandler
-import pl.syntaxerr.helpers.TimeHandler
-import pl.syntaxerr.helpers.UUIDManager
+import pl.syntaxdevteam.PunisherX
+import pl.syntaxdevteam.helpers.Logger
+import pl.syntaxdevteam.helpers.MessageHandler
+import pl.syntaxdevteam.helpers.TimeHandler
+import pl.syntaxdevteam.helpers.UUIDManager
 
 @Suppress("UnstableApiUsage")
 class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : BasicCommand {
@@ -23,7 +23,7 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
 
     override fun execute(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>) {
         if (args.isNotEmpty()) {
-            if (stack.sender.hasPermission("GuardianX.warn")) {
+            if (stack.sender.hasPermission("punisherx.warn")) {
                 if (args.size < 2) {
                     stack.sender.sendRichMessage(messageHandler.getMessage("warn", "usage"))
                 } else {
@@ -36,13 +36,14 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
 
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
-
                     val punishmentType = "WARN"
-                    val start = System.currentTimeMillis().toString()
-                    val end = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000).toString() else "nieokreślony"
+                    val start = System.currentTimeMillis()
+                    val end: Long? = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
+                    val endText = end?.toString() ?: if (plugin.config.getString("language") == "PL") "nieokreślony" else "undefined"
 
-                    plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end)
-                    plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end)
+                    plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
+                    plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
+
 
                     stack.sender.sendRichMessage(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     val message = Component.text(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))

@@ -1,4 +1,4 @@
-package pl.syntaxerr.helpers
+package pl.syntaxdevteam.helpers
 
 import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component

@@ -1,6 +1,6 @@
-package pl.syntaxerr.basic
+package pl.syntaxdevteam.basic
 
-import pl.syntaxerr.databases.PunishmentData
+import pl.syntaxdevteam.databases.PunishmentData
 
 
 class PunishmentManager {

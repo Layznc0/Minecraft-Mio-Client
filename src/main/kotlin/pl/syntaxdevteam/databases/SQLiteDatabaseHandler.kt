@@ -1,4 +1,4 @@
-package pl.syntaxerr.databases
+package pl.syntaxdevteam.databases
 
 import java.sql.Connection
 import java.sql.DriverManager
@@ -6,7 +6,7 @@ import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.ResultSet
 import java.sql.Statement
-import pl.syntaxerr.PunisherX
+import pl.syntaxdevteam.PunisherX
 import java.io.File
 
 class SQLiteDatabaseHandler(private val plugin: PunisherX) : DatabaseHandler {

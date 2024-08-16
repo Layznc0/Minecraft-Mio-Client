@@ -1,19 +1,20 @@
-package pl.syntaxerr
+package pl.syntaxdevteam
 
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.event.player.AsyncChatEvent
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
-import org.bstats.bukkit.Metrics
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import pl.syntaxerr.databases.MySQLDatabaseHandler
-import pl.syntaxerr.databases.SQLiteDatabaseHandler
-import pl.syntaxerr.databases.DatabaseHandler
-import pl.syntaxerr.basic.*
-import pl.syntaxerr.commands.*
-import pl.syntaxerr.helpers.*
+import pl.syntaxdevteam.basic.PunishmentChecker
+import pl.syntaxdevteam.basic.PunishmentManager
+import pl.syntaxdevteam.commands.*
+import pl.syntaxdevteam.databases.DatabaseHandler
+import pl.syntaxdevteam.databases.MySQLDatabaseHandler
+import pl.syntaxdevteam.databases.SQLiteDatabaseHandler
+import pl.syntaxdevteam.helpers.*
+import java.util.*
 
 @Suppress("UnstableApiUsage")
 class PunisherX : JavaPlugin(), Listener {
@@ -27,6 +28,7 @@ class PunisherX : JavaPlugin(), Listener {
     lateinit var punishmentManager: PunishmentManager
     private lateinit var pluginManager: PluginManager
     private lateinit var ipCache: IpCache
+    private val uuidManager = UUIDManager(this)
 
     override fun onLoad() {
         logger = Logger(pluginMetas, debugMode)
@@ -38,7 +40,7 @@ class PunisherX : JavaPlugin(), Listener {
         timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
         punishmentManager = PunishmentManager()
 
-        databaseHandler = when (config.getString("database.type")?.toLowerCase()) {
+        databaseHandler = when (config.getString("database.type")?.lowercase(Locale.getDefault())) {
             "mysql", "mariadb" -> {
                 MySQLDatabaseHandler(this, this.config)
             }
@@ -53,7 +55,7 @@ class PunisherX : JavaPlugin(), Listener {
 
         databaseHandler.openConnection()
         databaseHandler.createTables()
-        ipCache = IpCache()
+        ipCache = IpCache(this)
         server.pluginManager.registerEvents(ipCache, this)
         val manager: LifecycleEventManager<Plugin> = this.lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
@@ -61,13 +63,11 @@ class PunisherX : JavaPlugin(), Listener {
             commands.register("punisherx", "Komenda pluginu PunisherX. Wpisz /punisherx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
             commands.register("prx", "Komenda pluginu PunisherX. Wpisz /prx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
             commands.register("ban", messageHandler.getMessage("ban", "usage"), BanCommand(this, pluginMetas))
-            commands.register("banip", messageHandler.getMessage("banip", "usage"), BanIpCommand(this, pluginMetas, ipCache))
+            commands.register("banip", messageHandler.getMessage("banip", "usage"), BanIpCommand(this, pluginMetas, ipCache, uuidManager))
             commands.register("unban", messageHandler.getMessage("ban", "usage"), UnBanCommand(this, pluginMetas))
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
         }
         server.pluginManager.registerEvents(PunishmentChecker(this, ipCache), this)
-        val pluginId = 22952
-        Metrics(this, pluginId)
         pluginManager = PluginManager(this)
         val externalPlugins = pluginManager.fetchPluginsFromExternalSource("https://raw.githubusercontent.com/SyntaxDevTeam/plugins-list/main/plugins.json")
         val loadedPlugins = pluginManager.fetchLoadedPlugins()

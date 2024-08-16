@@ -1,4 +1,4 @@
-package pl.syntaxerr.databases
+package pl.syntaxdevteam.databases
 
 interface DatabaseHandler {
     fun openConnection()

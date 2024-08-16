@@ -1,4 +1,4 @@
-package pl.syntaxerr.commands
+package pl.syntaxdevteam.commands
 
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -6,11 +6,11 @@ import io.papermc.paper.plugin.configuration.PluginMeta
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
-import pl.syntaxerr.PunisherX
-import pl.syntaxerr.helpers.Logger
-import pl.syntaxerr.helpers.MessageHandler
-import pl.syntaxerr.helpers.TimeHandler
-import pl.syntaxerr.helpers.UUIDManager
+import pl.syntaxdevteam.PunisherX
+import pl.syntaxdevteam.helpers.Logger
+import pl.syntaxdevteam.helpers.MessageHandler
+import pl.syntaxdevteam.helpers.TimeHandler
+import pl.syntaxdevteam.helpers.UUIDManager
 
 @Suppress("UnstableApiUsage")
 class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : BasicCommand {
@@ -39,19 +39,20 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
                     val punishmentType = "BAN"
                     val start = System.currentTimeMillis()
                     val end: Long? = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
-                    val endText = end?.toString() ?: if (plugin.config.getString("language") == "PL") "nieokreślony" else "undefined"
+                    val endText = if (end == null) timeHandler.formatTime(null) else timeHandler.formatTime((end / 1000).toString())
 
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
-                    /*                  TODO: Dodać jako awaryjna metoda w przypadku problemu z łacznością z bazą danych
-                                        val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
-                                        val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanListType.PROFILE)
-                                        val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
-                                        banList.addBan(playerProfile, reason, banEndDate, stack.sender.name)
+
+                    /*  TODO: Dodać jako awaryjna metoda w przypadku problemu z łacznością z bazą danych
+                        val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
+                        val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanListType.PROFILE)
+                        val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
+                        banList.addBan(playerProfile, reason, banEndDate, stack.sender.name)
                     */
                     val targetPlayer = Bukkit.getPlayer(player)
                     if (targetPlayer != null) {
-                        val kickMessages = messageHandler.getComplexMessage("ban", "kick_message", mapOf("reason" to reason, "time" to endText))
+                        val kickMessages = messageHandler.getComplexMessage("ban", "kick_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))
                         val kickMessage = Component.text()
                         kickMessages.forEach { line ->
                             kickMessage.append(line)
@@ -59,11 +60,10 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
                         }
                         targetPlayer.kick(kickMessage.build())
                     }
-
-                    stack.sender.sendRichMessage(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to endText)))
-                    val message = Component.text(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to endText)))
+                    stack.sender.sendRichMessage(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
+                    val message = Component.text(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.info("Player $player ($uuid) has banned for $reason to time $endText")
+                    logger.info("Player $player ($uuid) has banned for $reason to time " + timeHandler.formatTime(gtime))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))

@@ -8,7 +8,7 @@ ban:
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
   kick_message:
     - 'Nazwa serwera'
-    - 'GuardianX &8» &7Zostałeś/aś zbanowany/a'
+    - 'PunisherX &8» &7Zostałeś/aś zbanowany/a'
     - '&7'
     - '&7'
     - "&cPowód &8» &7{reason}"
@@ -16,6 +16,7 @@ ban:
     - '&7'
     - '&8Możesz zgłosić swój sprzeciw na:'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+  broadcast: "Gracz {player} został zbanowany z powodu {reason} na czas {time}"
   no_reasons: "bez powodu"
   reasons:
     - "Oszystwo"
@@ -29,7 +30,7 @@ banip:
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
   kick_message:
     - 'Nazwa serwera'
-    - 'GuardianX &8» &7Twoje IP zostało zbanowane!'
+    - 'PunisherX &8» &7Twoje IP zostało zbanowane!'
     - '&7'
     - '&7'
     - "&cPowód &8» &7{reason}"
@@ -37,6 +38,7 @@ banip:
     - '&7'
     - '&8Możesz zgłosić swój sprzeciw na:'
     - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+  broadcast: "Gracz {player} został zbanowany z powodu {reason} na czas {time}"
   no_reasons: "bez powodu"
   reasons:
     - "Oszystwo"

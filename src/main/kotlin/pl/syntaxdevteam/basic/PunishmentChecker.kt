@@ -1,11 +1,11 @@
-package pl.syntaxerr.basic
+package pl.syntaxdevteam.basic
 
 import net.kyori.adventure.text.Component
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
-import pl.syntaxerr.PunisherX
-import pl.syntaxerr.helpers.IpCache
+import pl.syntaxdevteam.PunisherX
+import pl.syntaxdevteam.helpers.IpCache
 
 class PunishmentChecker(private val plugin: PunisherX, private val ipCache: IpCache) : Listener {
 

@@ -1,4 +1,4 @@
-package pl.syntaxerr.helpers
+package pl.syntaxdevteam.helpers
 
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -9,7 +9,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
-import pl.syntaxerr.PunisherX
+import pl.syntaxdevteam.PunisherX
 
 class UUIDManager(private val plugin: PunisherX) {
     private val activeUUIDs: MutableMap<String, String> = HashMap()
