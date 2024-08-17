@@ -131,33 +131,6 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
         }
     }
 
-    override fun removePunishment(uuid: String, punishmentType: String) {
-        if (!isConnected()) {
-            openConnection()
-        }
-        if (isConnected()) {
-            val query = """
-            DELETE FROM `punishments` 
-            WHERE `uuid` = ? AND `punishmentType` = ?
-        """.trimIndent()
-            try {
-                val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
-                preparedStatement.setString(1, uuid)
-                preparedStatement.setString(2, punishmentType)
-                val rowsAffected = preparedStatement.executeUpdate()
-                if (rowsAffected > 0) {
-                    plugin.logger.debug("Punishment of type $punishmentType for UUID: $uuid removed from the database.")
-                } else {
-                    plugin.logger.warning("No punishment of type $punishmentType found for UUID: $uuid.")
-                }
-            } catch (e: SQLException) {
-                plugin.logger.err("Failed to remove punishment of type $punishmentType for UUID: $uuid. ${e.message}")
-            }
-        } else {
-            plugin.logger.warning("Failed to reconnect to the database.")
-        }
-    }
-
     override fun closeConnection() {
         try {
             connection?.close()
@@ -166,7 +139,6 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             plugin.logger.err("Failed to close the connection to the database. ${e.message}")
         }
     }
-
     override fun getPunishment(uuid: String): PunishmentData? {
         if (!isConnected()) {
             openConnection()
@@ -192,6 +164,61 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
         } else {
             plugin.logger.debug("Brak kary dla UUID: $uuid")
             null
+        }
+    }
+
+    override fun getPunishmentByIP(ip: String): PunishmentData? {
+        if (!isConnected()) {
+            openConnection()
+        }
+
+        val statement: Statement? = connection?.createStatement()
+        plugin.logger.debug("Wykonywanie zapytania SQL dla IP: $ip")
+        val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$ip'")
+        return if (resultSet != null && resultSet.next()) {
+            val type = resultSet.getString("punishmentType")
+            val reason = resultSet.getString("reason")
+            val start = resultSet.getLong("start")
+            val end = resultSet.getLong("end")
+            val punishment = PunishmentData(ip, type, reason, start, end)
+            if (plugin.punishmentManager.isPunishmentActive(punishment)) {
+                plugin.logger.debug("Kara znaleziona dla IP: $ip, typ: $type, powód: $reason, start: $start, koniec: $end")
+                punishment
+            } else {
+                plugin.logger.debug("Kara dla IP: $ip wygasła i została usunięta")
+                removePunishment(ip, type)
+                null
+            }
+        } else {
+            plugin.logger.debug("Brak kary dla IP: $ip")
+            null
+        }
+    }
+
+    override fun removePunishment(uuidOrIp: String, punishmentType: String) {
+        if (!isConnected()) {
+            openConnection()
+        }
+        if (isConnected()) {
+            val query = """
+        DELETE FROM `punishments` 
+        WHERE `uuid` = ? AND `punishmentType` = ?
+    """.trimIndent()
+            try {
+                val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
+                preparedStatement.setString(1, uuidOrIp)
+                preparedStatement.setString(2, punishmentType)
+                val rowsAffected = preparedStatement.executeUpdate()
+                if (rowsAffected > 0) {
+                    plugin.logger.debug("Punishment of type $punishmentType for UUID/IP: $uuidOrIp removed from the database.")
+                } else {
+                    plugin.logger.warning("No punishment of type $punishmentType found for UUID/IP: $uuidOrIp.")
+                }
+            } catch (e: SQLException) {
+                plugin.logger.err("Failed to remove punishment of type $punishmentType for UUID/IP: $uuidOrIp. ${e.message}")
+            }
+        } else {
+            plugin.logger.warning("Failed to reconnect to the database.")
         }
     }
 }

@@ -19,6 +19,6 @@ autoDownloadUpdates: false
 # Tryb debugowania ustawiony na true daje więcej opisów działań w konsoli
 debug: false
 
-# Czy bStats powinien być włączony? Zalecane ustawienie: true
-bStats:
+# Czy StatsCollector powinien być włączony? Zalecane ustawienie: true
+stats:
   enabled: true

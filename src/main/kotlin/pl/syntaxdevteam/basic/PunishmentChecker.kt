@@ -5,17 +5,17 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import pl.syntaxdevteam.PunisherX
-import pl.syntaxdevteam.helpers.IpCache
 
-class PunishmentChecker(private val plugin: PunisherX, private val ipCache: IpCache) : Listener {
+class PunishmentChecker(private val plugin: PunisherX) : Listener {
 
     @EventHandler
     fun onPlayerPreLogin(event: AsyncPlayerPreLoginEvent) {
         plugin.logger.debug("Sprawdzanie kary dla gracza: ${event.name}")
 
         val uuid = event.uniqueId.toString()
-        val ip = ipCache.getIp(uuid) ?: event.address.hostAddress
-        val punishment = plugin.databaseHandler.getPunishment(uuid) ?: plugin.databaseHandler.getPunishment(ip)
+        val ip = event.address.hostAddress
+
+        val punishment = plugin.databaseHandler.getPunishment(uuid) ?: plugin.databaseHandler.getPunishmentByIP(ip)
         if (punishment != null) {
             if (plugin.punishmentManager.isPunishmentActive(punishment)) {
                 val endTime = punishment.end
