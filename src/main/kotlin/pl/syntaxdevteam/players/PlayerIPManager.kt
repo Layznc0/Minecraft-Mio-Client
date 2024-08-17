@@ -54,8 +54,12 @@ class PlayerIPManager(private val plugin: PunisherX) : Listener {
     }
 
     fun getPlayerIPByName(playerName: String): String? {
-        return searchCache { it[0] == playerName }
+        plugin.logger.debug("Pobieranie IP dla gracza: $playerName")
+        val ip = searchCache { it[0] == playerName }
+        plugin.logger.debug("Znalezione IP dla gracza $playerName: $ip")
+        return ip
     }
+
 
     fun getPlayerIPByUUID(playerUUID: String): String? {
         return searchCache { it[1] == playerUUID }
@@ -66,8 +70,25 @@ class PlayerIPManager(private val plugin: PunisherX) : Listener {
     }
 
     private fun searchCache(predicate: (List<String>) -> Boolean): String? {
-        return cacheFile.readLines().map { decrypt(it).split(",") }.find(predicate)?.get(2)
+        plugin.logger.debug("Przeszukiwanie cache")
+        val lines = cacheFile.readLines()
+        plugin.logger.debug("Liczba linii w cache: ${lines.size}")
+        for (line in lines) {
+            val decryptedLine = decrypt(line)
+            plugin.logger.debug("Odszyfrowana linia: $decryptedLine")
+            val parts = decryptedLine.split(",")
+            plugin.logger.debug("Podzielone części: $parts")
+            if (predicate(parts.map { it.lowercase() })) {
+                plugin.logger.debug("Znaleziono dopasowanie: ${parts[2]}")
+                return parts[2]
+            }
+        }
+        plugin.logger.debug("Nie znaleziono dopasowania w cache")
+        return null
     }
+
+
+
 
     private fun searchCacheMultiple(predicate: (List<String>) -> Boolean): List<String> {
         return cacheFile.readLines().map { decrypt(it).split(",") }.filter(predicate).map { it[0] }

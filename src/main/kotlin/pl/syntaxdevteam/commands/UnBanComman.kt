@@ -39,6 +39,7 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                 } else {
                     // Zakładamy, że to nick gracza
                     val uuid = uuidManager.getUUID(playerOrIpOrUUID)
+                    logger.debug("UUID dla gracza $playerOrIpOrUUID: [$uuid]")
                     if (uuid != null) {
                         val punishmentType = "BAN"
                         val punishment = plugin.databaseHandler.getPunishment(uuid)
@@ -52,7 +53,7 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                         } else {
                             // Sprawdzanie kary BANIP po IP gracza
                             val ip = plugin.playerIPManager.getPlayerIPByName(playerOrIpOrUUID)
-                            logger.debug("Przypisane IP: [$ip]")
+                            logger.debug("Przypisane IP dla gracza $playerOrIpOrUUID: [$ip]")
                             if (ip != null) {
                                 val punishType = "BANIP"
                                 val punishmentByIP = plugin.databaseHandler.getPunishmentByIP(ip)

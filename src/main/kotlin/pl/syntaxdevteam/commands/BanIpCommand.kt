@@ -31,7 +31,7 @@ class BanIpCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                     val playerIP = when {
                         playerOrIpOrUUID.matches(Regex("\\d+\\.\\d+\\.\\d+\\.\\d+")) -> playerOrIpOrUUID
                         playerOrIpOrUUID.matches(Regex("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) -> plugin.playerIPManager.getPlayerIPByUUID(playerOrIpOrUUID)
-                        else -> plugin.playerIPManager.getPlayerIPByName(playerOrIpOrUUID)
+                        else -> plugin.playerIPManager.getPlayerIPByName(playerOrIpOrUUID.lowercase())
                     }
 
                     if (playerIP == null) {
