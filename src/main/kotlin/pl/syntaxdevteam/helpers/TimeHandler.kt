@@ -29,7 +29,7 @@ class TimeHandler(private val language: String) {
 
         val amount = time.substring(0, time.length - 1)
         val unit = time.last()
-
+        // TODO: zastąpić wszystkie komunikaty na obsługę wielu języków
         return when (unit) {
             's' -> "$amount ${if (language == "PL") "sekund" else "seconds"}"
             'm' -> "$amount ${if (language == "PL") "minut" else "minutes"}"

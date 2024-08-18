@@ -10,7 +10,7 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
 
     @EventHandler
     fun onPlayerPreLogin(event: AsyncPlayerPreLoginEvent) {
-        plugin.logger.debug("Sprawdzanie kary dla gracza: ${event.name}")
+        plugin.logger.debug("Checking punishment for player: ${event.name}")
 
         val uuid = event.uniqueId.toString()
         val ip = event.address.hostAddress
@@ -34,10 +34,10 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                 }
                 event.loginResult = AsyncPlayerPreLoginEvent.Result.KICK_BANNED
                 event.kickMessage(kickMessage.build())
-                plugin.logger.debug("Gracz ${event.name} został wyrzucony z powodu: $reason")
+                plugin.logger.debug("Player ${event.name} was kicked for: $reason")
             } else {
                 plugin.databaseHandler.removePunishment(uuid, punishment.type)
-                plugin.logger.debug("Kara dla UUID: $uuid wygasła i została usunięta")
+                plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
             }
         }
     }

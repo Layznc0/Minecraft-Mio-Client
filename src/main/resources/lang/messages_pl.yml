@@ -1,7 +1,6 @@
 error:
   no_permission: "Nie masz uprawnień do tej komendy."
   player_not_found: "Nie znaleziono gracza o nicku {player}."
-  player_ip_not_found: "Nieznaleziono IP gracza {player}, wpisz ręcznie adres IP"
   reload: "Wystąpił błąd podczas przełądowania konfiguracji: "
 ban:
   ban: "Zbanowałeś {player} za {reason} na czas {time}"
@@ -23,11 +22,9 @@ ban:
     - "Griefing"
     - "Spamowanie"
     - "Wulgarny język"
-  usage_unban: "Poprawne użycie to: /ban <player>"
-  unban: "Gracz {player} został odbanowany"
 banip:
   ban: "Twoje IP zostało zbanowane za {reason} na czas {time}"
-  usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
+  usage: "Poprawne użycie to: /banip <player> (czas) <powód>"
   kick_message:
     - 'Nazwa serwera'
     - 'PunisherX &8» &7Twoje IP zostało zbanowane!'
@@ -45,6 +42,11 @@ banip:
     - "Griefing"
     - "Spamowanie"
     - "Wulgarny język"
+unban:
+  unban: "Gracz {player} został odbanowany"
+  usage: "Poprawne użycie to: /unban <player>"
+  broadcast: "Gracz {player} został odbanowany"
+
 warn:
   warn: Ostrzegłeś {player} za {reason} na czas {time}
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"

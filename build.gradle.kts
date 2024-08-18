@@ -27,9 +27,6 @@ dependencies {
     // PostgreSQL
     compileOnly("org.postgresql:postgresql:42.7.3")
 
-    // H2 Database
-    compileOnly("com.h2database:h2:2.2.224")
-
     // Google API Client
     compileOnly("com.google.api-client:google-api-client-gson:2.6.0")
 }

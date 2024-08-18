@@ -139,13 +139,14 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             plugin.logger.err("Failed to close the connection to the database. ${e.message}")
         }
     }
+
     override fun getPunishment(uuid: String): PunishmentData? {
         if (!isConnected()) {
             openConnection()
         }
 
         val statement: Statement? = connection?.createStatement()
-        plugin.logger.debug("Wykonywanie zapytania SQL dla UUID: $uuid")
+        plugin.logger.debug("Executing SQL query for UUID: $uuid")
         val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$uuid'")
         return if (resultSet != null && resultSet.next()) {
             val type = resultSet.getString("punishmentType")
@@ -154,15 +155,15 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             val end = resultSet.getLong("end")
             val punishment = PunishmentData(uuid, type, reason, start, end)
             if (plugin.punishmentManager.isPunishmentActive(punishment)) {
-                plugin.logger.debug("Kara znaleziona dla UUID: $uuid, typ: $type, powód: $reason, start: $start, koniec: $end")
+                plugin.logger.debug("Punishment found for UUID: $uuid, type: $type, reason: $reason, start: $start, end: $end")
                 punishment
             } else {
-                plugin.logger.debug("Kara dla UUID: $uuid wygasła i została usunięta")
+                plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
                 removePunishment(uuid, type)
                 null
             }
         } else {
-            plugin.logger.debug("Brak kary dla UUID: $uuid")
+            plugin.logger.debug("No punishment found for UUID: $uuid")
             null
         }
     }
@@ -173,7 +174,7 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
         }
 
         val statement: Statement? = connection?.createStatement()
-        plugin.logger.debug("Wykonywanie zapytania SQL dla IP: $ip")
+        plugin.logger.debug("Executing SQL query for IP: $ip")
         val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$ip'")
         return if (resultSet != null && resultSet.next()) {
             val type = resultSet.getString("punishmentType")
@@ -182,15 +183,15 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             val end = resultSet.getLong("end")
             val punishment = PunishmentData(ip, type, reason, start, end)
             if (plugin.punishmentManager.isPunishmentActive(punishment)) {
-                plugin.logger.debug("Kara znaleziona dla IP: $ip, typ: $type, powód: $reason, start: $start, koniec: $end")
+                plugin.logger.debug("Punishment found for IP: $ip, type: $type, reason: $reason, start: $start, end: $end")
                 punishment
             } else {
-                plugin.logger.debug("Kara dla IP: $ip wygasła i została usunięta")
+                plugin.logger.debug("Punishment for IP: $ip has expired and has been removed")
                 removePunishment(ip, type)
                 null
             }
         } else {
-            plugin.logger.debug("Brak kary dla IP: $ip")
+            plugin.logger.debug("No punishment found for IP: $ip")
             null
         }
     }

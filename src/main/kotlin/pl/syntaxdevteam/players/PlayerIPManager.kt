@@ -32,9 +32,9 @@ class PlayerIPManager(private val plugin: PunisherX) : Listener {
         if (playerIP != null) {
             if (!isPlayerInfoExists(playerName, playerUUID, playerIP)) {
                 savePlayerInfo(playerName, playerUUID, playerIP)
-                plugin.logger.debug("Zapisano informacje o graczu -> playerName: $playerName, playerUUID: $playerUUID, playerIP: $playerIP")
+                plugin.logger.debug("Saved player info -> playerName: $playerName, playerUUID: $playerUUID, playerIP: $playerIP")
             } else {
-                plugin.logger.debug("Informacje o graczu już istnieją -> playerName: $playerName, playerUUID: $playerUUID, playerIP: $playerIP")
+                plugin.logger.debug("Player info already exists -> playerName: $playerName, playerUUID: $playerUUID, playerIP: $playerIP")
             }
         }
     }
@@ -50,13 +50,13 @@ class PlayerIPManager(private val plugin: PunisherX) : Listener {
     private fun savePlayerInfo(playerName: String, playerUUID: String, playerIP: String) {
         val encryptedData = encrypt("$playerName,$playerUUID,$playerIP")
         cacheFile.appendText("$encryptedData\n")
-        plugin.logger.debug("Zapisano zaszyfrowano dane -> playerName: $playerName, playerUUID: $playerUUID, playerIP: $playerIP")
+        plugin.logger.debug("Encrypted data saved -> playerName: $playerName, playerUUID: $playerUUID, playerIP: $playerIP")
     }
 
     fun getPlayerIPByName(playerName: String): String? {
-        plugin.logger.debug("Pobieranie IP dla gracza: $playerName")
+        plugin.logger.debug("Fetching IP for player: $playerName")
         val ip = searchCache { it[0] == playerName }
-        plugin.logger.debug("Znalezione IP dla gracza $playerName: $ip")
+        plugin.logger.debug("Found IP for player $playerName: $ip")
         return ip
     }
 
@@ -70,25 +70,22 @@ class PlayerIPManager(private val plugin: PunisherX) : Listener {
     }
 
     private fun searchCache(predicate: (List<String>) -> Boolean): String? {
-        plugin.logger.debug("Przeszukiwanie cache")
+        plugin.logger.debug("Searching cache")
         val lines = cacheFile.readLines()
-        plugin.logger.debug("Liczba linii w cache: ${lines.size}")
+        plugin.logger.debug("Number of lines in cache: ${lines.size}")
         for (line in lines) {
             val decryptedLine = decrypt(line)
-            plugin.logger.debug("Odszyfrowana linia: $decryptedLine")
+            plugin.logger.debug("Decrypted line: $decryptedLine")
             val parts = decryptedLine.split(",")
-            plugin.logger.debug("Podzielone części: $parts")
+            plugin.logger.debug("Split parts: $parts")
             if (predicate(parts.map { it.lowercase() })) {
-                plugin.logger.debug("Znaleziono dopasowanie: ${parts[2]}")
+                plugin.logger.debug("Match found: ${parts[2]}")
                 return parts[2]
             }
         }
-        plugin.logger.debug("Nie znaleziono dopasowania w cache")
+        plugin.logger.debug("No match found in cache")
         return null
     }
-
-
-
 
     private fun searchCacheMultiple(predicate: (List<String>) -> Boolean): List<String> {
         return cacheFile.readLines().map { decrypt(it).split(",") }.filter(predicate).map { it[0] }

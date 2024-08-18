@@ -36,7 +36,7 @@ class UUIDManager(private val plugin: PunisherX) {
             connection.requestMethod = "GET"
             connection.connect()
 
-            println("API Response Code: ${connection.responseCode}")
+            plugin.logger.debug("API Response Code: ${connection.responseCode}")
 
             if (connection.responseCode == 200) {
                 val reader = InputStreamReader(connection.inputStream)
@@ -63,7 +63,7 @@ class UUIDManager(private val plugin: PunisherX) {
             val parser = JSONParser()
             val jsonObject = parser.parse(response) as JSONObject
             val rawUUID = jsonObject["id"] as String
-            println("Raw UUID from API: $rawUUID")
+            plugin.logger.debug("Raw UUID from API: $rawUUID")
             rawUUID.replaceFirst(
                 "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)".toRegex(),
                 "$1-$2-$3-$4-$5"

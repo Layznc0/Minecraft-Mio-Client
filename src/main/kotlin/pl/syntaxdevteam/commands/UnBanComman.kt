@@ -22,8 +22,6 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
         if (args.isNotEmpty()) {
             if (stack.sender.hasPermission("punisherx.unban")) {
                 val playerOrIpOrUUID = args[0]
-
-                // Sprawdzenie, czy podano IP
                 if (playerOrIpOrUUID.matches(Regex("\\d+\\.\\d+\\.\\d+\\.\\d+"))) {
                     val punishmentType = "BANIP"
                     val punishment = plugin.databaseHandler.getPunishmentByIP(playerOrIpOrUUID)
@@ -37,13 +35,12 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                         stack.sender.sendRichMessage(messageHandler.getMessage("error", "player_not_found", mapOf("player" to playerOrIpOrUUID)))
                     }
                 } else {
-                    // Zakładamy, że to nick gracza
                     val uuid = uuidManager.getUUID(playerOrIpOrUUID)
-                    logger.debug("UUID dla gracza $playerOrIpOrUUID: [$uuid]")
+                    logger.debug("UUID for player $playerOrIpOrUUID: [$uuid]")
                     if (uuid != null) {
                         val punishmentType = "BAN"
                         val punishment = plugin.databaseHandler.getPunishment(uuid)
-                        logger.debug("Kara dla UUID: [$punishment]")
+                        logger.debug("Punishment for UUID: [$punishment]")
                         if (punishment != null) {
                             plugin.databaseHandler.removePunishment(uuid, punishmentType)
                             stack.sender.sendRichMessage(messageHandler.getMessage("ban", "unban", mapOf("player" to playerOrIpOrUUID)))
@@ -51,13 +48,12 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                             plugin.server.broadcast(message)
                             logger.info("Player $playerOrIpOrUUID ($uuid) has been unbanned")
                         } else {
-                            // Sprawdzanie kary BANIP po IP gracza
                             val ip = plugin.playerIPManager.getPlayerIPByName(playerOrIpOrUUID)
-                            logger.debug("Przypisane IP dla gracza $playerOrIpOrUUID: [$ip]")
+                            logger.debug("Assigned IP for player $playerOrIpOrUUID: [$ip]")
                             if (ip != null) {
                                 val punishType = "BANIP"
                                 val punishmentByIP = plugin.databaseHandler.getPunishmentByIP(ip)
-                                logger.debug("Kara dla IP: [$punishmentByIP]")
+                                logger.debug("Punishment for IP: [$punishmentByIP]")
                                 if (punishmentByIP != null) {
                                     plugin.databaseHandler.removePunishment(ip, punishType)
                                     stack.sender.sendRichMessage(messageHandler.getMessage("ban", "unban", mapOf("player" to playerOrIpOrUUID)))

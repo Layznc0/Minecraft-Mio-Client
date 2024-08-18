@@ -45,7 +45,7 @@ class PunisherX : JavaPlugin(), Listener {
                 SQLiteDatabaseHandler(this)
             }
             else -> {
-                logger.warning("Nieprawidłowy typ bazy danych w konfiguracji. Używanie domyślnej bazy danych SQLite.")
+                logger.warning("Invalid database type in configuration. Using default SQLite database.")
                 SQLiteDatabaseHandler(this)
             }
         }
@@ -59,8 +59,8 @@ class PunisherX : JavaPlugin(), Listener {
         val manager: LifecycleEventManager<Plugin> = this.lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val commands: Commands = event.registrar()
-            commands.register("punisherx", "Komenda pluginu PunisherX. Wpisz /punisherx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
-            commands.register("prx", "Komenda pluginu PunisherX. Wpisz /prx help aby sprawdzic dostępne komendy", PunishesXCommands(this))
+            commands.register("punisherx", "PunisherX plugin command. Type /punisherx help to check available commands", PunishesXCommands(this))
+            commands.register("prx", "PunisherX plugin command. Type /prx help to check available commands", PunishesXCommands(this))
             commands.register("ban", messageHandler.getMessage("ban", "usage"), BanCommand(this, pluginMetas))
             commands.register("banip", messageHandler.getMessage("banip", "usage"), BanIpCommand(this, pluginMetas))
             commands.register("unban", messageHandler.getMessage("ban", "usage"), UnBanCommand(this, pluginMetas))
