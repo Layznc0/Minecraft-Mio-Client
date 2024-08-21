@@ -1,12 +1,16 @@
 package pl.syntaxdevteam.basic
 
+import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import pl.syntaxdevteam.PunisherX
+import java.util.*
 
 class PunishmentChecker(private val plugin: PunisherX) : Listener {
+
 
     @EventHandler
     fun onPlayerPreLogin(event: AsyncPlayerPreLoginEvent) {
@@ -38,6 +42,54 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
             } else {
                 plugin.databaseHandler.removePunishment(uuid, punishment.type)
                 plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerChat(event: AsyncChatEvent) {
+        val player = event.player
+        val uuid = player.uniqueId.toString()
+
+        val punishment = plugin.databaseHandler.getPunishment(uuid)
+        if (punishment != null) {
+            if(punishment.type == "MUTE" && plugin.punishmentManager.isPunishmentActive(punishment)) {
+                val endTime = punishment.end
+                val remainingTime = (endTime - System.currentTimeMillis()) / 1000
+                val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(remainingTime.toString())
+                val reason = punishment.reason
+                event.isCancelled = true
+                player.sendMessage(plugin.messageHandler.getComplexMessage("mute", "mute_message", mapOf("reason" to reason, "time" to duration)).toString())
+            } else {
+                plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerCommand(event: PlayerCommandPreprocessEvent) {
+        val player = event.player
+        val uuid = player.uniqueId.toString()
+        val command = event.message.split(" ")[0].lowercase(Locale.getDefault()).removePrefix("/")
+
+        if (plugin.config.getBoolean("mute_pm")) {
+            val muteCommands = plugin.config.getStringList("mute_cmd")
+            if (muteCommands.contains(command)) {
+                val punishment = plugin.databaseHandler.getPunishment(uuid)
+                if (punishment != null) {
+                    if(punishment.type == "MUTE" && plugin.punishmentManager.isPunishmentActive(punishment)) {
+                        val endTime = punishment.end
+                        val remainingTime = (endTime - System.currentTimeMillis()) / 1000
+                        val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(remainingTime.toString())
+                        val reason = punishment.reason
+                        event.isCancelled = true
+                        player.sendMessage(plugin.messageHandler.getComplexMessage("mute", "mute_message", mapOf("reason" to reason, "time" to duration)).toString())
+                    } else {
+                        plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                        plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
+                    }
+                }
             }
         }
     }

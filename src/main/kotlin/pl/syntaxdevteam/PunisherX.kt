@@ -65,6 +65,9 @@ class PunisherX : JavaPlugin(), Listener {
             commands.register("banip", messageHandler.getMessage("banip", "usage"), BanIpCommand(this, pluginMetas))
             commands.register("unban", messageHandler.getMessage("ban", "usage"), UnBanCommand(this, pluginMetas))
             commands.register("warn", messageHandler.getMessage("warn", "usage"), WarnCommand(this, pluginMetas))
+            commands.register("unwarn", messageHandler.getMessage("unwarn", "usage"), UnWarnCommand(this, pluginMetas))
+            commands.register("mute", messageHandler.getMessage("mute", "usage"), MuteCommand(this, pluginMetas))
+            commands.register("unmute", messageHandler.getMessage("mute", "usage"), UnMuteCommand(this, pluginMetas))
         }
         server.pluginManager.registerEvents(PunishmentChecker(this), this)
         pluginManager = PluginManager(this)

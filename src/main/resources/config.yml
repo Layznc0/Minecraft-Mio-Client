@@ -12,6 +12,38 @@ database:
 # Plugin language selection. Possible values: "PL", "EN"
 language: "PL"
 
+# Czy prywatne wiadomości też mają być blokowane przy MUTE?
+mute_pm: false
+
+# Jeśli zaznaczyłeś mute_pm na TRUE to tu możesz edytować jakie komendy dla prywatnych wiadomości mają być blokowane
+mute_cmd:
+  - 'me'
+  - 'say'
+  - 'action'
+  - 'eaction'
+  - 'describe'
+  - 'edescribe'
+  - 'eme'
+  - 'w'
+  - 'm'
+  - 'pm'
+  - 'whisper'
+  - 'ewhisper'
+  - 'emsg'
+  - 'msg'
+  - 'etell'
+  - 'tell'
+  - 'er'
+  - 'r'
+  - 'reply'
+  - 'ereply'
+  - 'ac'
+  - 'eac'
+  - 'amsg'
+  - 'eamsg'
+  - 'ehelpop'
+  - 'p msg'
+
 # Update check and auto-update settings
 checkForUpdates: true
 autoDownloadUpdates: false
