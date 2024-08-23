@@ -51,7 +51,10 @@ class MuteCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
 
                     // Notify the player immediately if they are online
                     val targetPlayer = Bukkit.getPlayer(uuid)
-                    targetPlayer?.sendMessage(messageHandler.getComplexMessage("mute", "mute_message", mapOf("reason" to reason, "time" to endText)).toString())
+                    val muteMessage = plugin.messageHandler.getComplexMessage("mute", "mute_message", mapOf("reason" to reason, "time" to endText))
+                    muteMessage.forEach { line ->
+                        targetPlayer?.sendMessage(line)
+                    }
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
@@ -64,9 +67,20 @@ class MuteCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
     override fun suggest(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>): List<String> {
         return when (args.size) {
             1 -> plugin.server.onlinePlayers.map { it.name }
-            2 -> listOf("1s", "1m", "1h", "1d")
+            2 -> generateTimeSuggestions()
             3 -> messageHandler.getReasons("mute", "reasons")
             else -> emptyList()
         }
+    }
+
+    private fun generateTimeSuggestions(): List<String> {
+        val units = listOf("s", "m", "h", "d")
+        val suggestions = mutableListOf<String>()
+        for (i in 1..999) {
+            for (unit in units) {
+                suggestions.add("$i$unit")
+            }
+        }
+        return suggestions
     }
 }
