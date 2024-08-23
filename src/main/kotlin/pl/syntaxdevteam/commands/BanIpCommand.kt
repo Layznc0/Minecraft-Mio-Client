@@ -77,9 +77,20 @@ class BanIpCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
     override fun suggest(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>): List<String> {
         return when (args.size) {
             1 -> plugin.server.onlinePlayers.map { it.name }
-            2 -> listOf("1s", "1m", "1h", "1d")
+            2 -> generateTimeSuggestions()
             3 -> messageHandler.getReasons("banip", "reasons")
             else -> emptyList()
         }
+    }
+
+    private fun generateTimeSuggestions(): List<String> {
+        val units = listOf("s", "m", "h", "d")
+        val suggestions = mutableListOf<String>()
+        for (i in 1..999) {
+            for (unit in units) {
+                suggestions.add("$i$unit")
+            }
+        }
+        return suggestions
     }
 }
