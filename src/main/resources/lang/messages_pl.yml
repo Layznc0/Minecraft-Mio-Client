@@ -2,6 +2,7 @@ error:
   no_permission: "Nie masz uprawnień do tej komendy."
   player_not_found: "Nie znaleziono gracza o nicku {player}."
   reload: "Wystąpił błąd podczas przełądowania konfiguracji: "
+
 ban:
   ban: "Zbanowałeś {player} za {reason} na czas {time}"
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
@@ -22,8 +23,9 @@ ban:
     - "Griefing"
     - "Spamowanie"
     - "Wulgarny język"
+
 banip:
-  ban: "Twoje IP zostało zbanowane za {reason} na czas {time}"
+  ban: "Zbanowałeś IP gracza za {reason} na czas {time}"
   usage: "Poprawne użycie to: /banip <player> (czas) <powód>"
   kick_message:
     - 'Nazwa serwera'
@@ -42,10 +44,32 @@ banip:
     - "Griefing"
     - "Spamowanie"
     - "Wulgarny język"
+
 unban:
   unban: "Gracz {player} został odbanowany"
   usage: "Poprawne użycie to: /unban <player>"
   broadcast: "Gracz {player} został odbanowany"
+
+mute:
+  mute: "Wyciszyłeś gracza {player} za {reason} na czas {time}"
+  usage: "Poprawne użycie to: /mute <player> (time) <reason>"
+  mute_message:
+    - "Zostałeś/aś wyciszony/a za {reason} na czas {time}"
+  mute_info_message:
+    - "Próbujesz coś powiedzieć ale zostałeś/aś wyciszony/a"
+  broadcast: "Gracz {player} został wyciszony za {reason} na czas {time}"
+  no_reasons: "bez powodu"
+  reasons:
+    - "Reklama"
+    - "Spam"
+    - "Obraza gracza"
+    - "Wulgarny język"
+
+unmute:
+  unmute: "Odwyciszyłeś gracza {player}"
+  usage: "Poprawne użycie to: /mute <player>"
+  unmute_message: "Zostałeś/aś odwyciszony/a!"
+
 warn:
   warn: Ostrzegłeś {player} za {reason} na czas {time}
   usage: "Poprawne użycie to: /ban <player> (czas) <powód>"

@@ -11,7 +11,7 @@ import java.io.File
 
 @Suppress("UnstableApiUsage")
 class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
-    private val language = plugin.config.getString("language") ?: "PL"
+    private val language = plugin.config.getString("language") ?: "EN"
     private var messages: FileConfiguration
     private var config = plugin.config
     private var debugMode = config.getBoolean("debug")
@@ -39,17 +39,24 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
         messages = loadMessages()
     }
 
+    private fun getPrefix(): String {
+        return messages.getString("prefix") ?: "[PunisherX] "
+    }
+
     fun getMessage(category: String, key: String, placeholders: Map<String, String> = emptyMap()): String {
+        val prefix = getPrefix()
         val message = messages.getString("$category.$key") ?: run {
             logger.err("There was an error loading the message $key from category $category")
             "Message not found. Check console..."
         }
-        return placeholders.entries.fold(message) { acc, entry ->
+        val formattedMessage = placeholders.entries.fold(message) { acc, entry ->
             acc.replace("{${entry.key}}", entry.value)
         }
+        return "$prefix $formattedMessage"
     }
 
     fun getComplexMessage(category: String, key: String, placeholders: Map<String, String> = emptyMap()): List<Component> {
+        val prefix = getPrefix()
         val messageList = messages.getStringList("$category.$key")
         if (messageList.isEmpty()) {
             logger.err("There was an error loading the message list $key from category $category")
@@ -59,13 +66,15 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
             val formattedMessage = placeholders.entries.fold(message) { acc, entry ->
                 acc.replace("{${entry.key}}", entry.value)
             }
-            if (formattedMessage.contains("<")) {
-                MiniMessage.miniMessage().deserialize(formattedMessage)
+            val prefixedMessage = "$prefix $formattedMessage"
+            if (prefixedMessage.contains("<")) {
+                MiniMessage.miniMessage().deserialize(prefixedMessage)
             } else {
-                LegacyComponentSerializer.legacyAmpersand().deserialize(formattedMessage)
+                LegacyComponentSerializer.legacyAmpersand().deserialize(prefixedMessage)
             }
         }
     }
+
     fun getReasons(category: String, key: String): List<String> {
         return messages.getStringList("$category.$key")
     }
