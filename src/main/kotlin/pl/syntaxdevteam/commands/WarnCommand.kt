@@ -3,7 +3,8 @@ package pl.syntaxdevteam.commands
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import pl.syntaxdevteam.PunisherX
 import pl.syntaxdevteam.helpers.Logger
@@ -33,22 +34,24 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                         stack.sender.sendRichMessage(messageHandler.getMessage("error", "player_not_found", mapOf("player" to player)))
                         return
                     }
-
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
-                    val punishmentType = "WARN"
+                    val punishmentType = "MUTE"
                     val start = System.currentTimeMillis()
                     val end: Long? = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
-                    val endText = end?.toString() ?: if (plugin.config.getString("language") == "PL") "nieokreślony" else "undefined"
+                    val endText = if (end == null) timeHandler.formatTime(null) else timeHandler.formatTime((end / 1000).toString())
 
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
 
-
                     stack.sender.sendRichMessage(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
-                    val message = Component.text(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
+                    val targetPlayer = Bukkit.getPlayer(player)
+                    val muteMessage = messageHandler.getMessage("warn", "warn_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))
+                    val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
+                    targetPlayer?.sendMessage(formattedMessage)
+                    val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("warn", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.info("Player " + player + "(" + uuid + ") has warned for " + reason + " to time " + timeHandler.formatTime(gtime))
+                    logger.info("Player $player ($uuid) has been warned for $reason to time " + timeHandler.formatTime(gtime))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
@@ -56,5 +59,25 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
         } else {
             stack.sender.sendRichMessage(messageHandler.getMessage("warn", "usage"))
         }
+    }
+
+    override fun suggest(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>): List<String> {
+        return when (args.size) {
+            1 -> plugin.server.onlinePlayers.map { it.name }
+            2 -> generateTimeSuggestions()
+            3 -> messageHandler.getReasons("warn", "reasons")
+            else -> emptyList()
+        }
+    }
+
+    private fun generateTimeSuggestions(): List<String> {
+        val units = listOf("s", "m", "h", "d")
+        val suggestions = mutableListOf<String>()
+        for (i in 1..999) {
+            for (unit in units) {
+                suggestions.add("$i$unit")
+            }
+        }
+        return suggestions
     }
 }
