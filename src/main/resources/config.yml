@@ -13,10 +13,10 @@ database:
 # Plugin language selection. Possible values: "EN", "PL"
 language: "EN"
 
-# Czy prywatne wiadomości rónież mają być blokowane przy karze MUTE?
+# Should private messages also be blocked when MUTE penalty is applied?
 mute_pm: false
 
-# Jeśli zaznaczyłeś mute_pm na TRUE to tu możesz edytować jakie komendy dla prywatnych wiadomości mają być blokowane
+# If you set mute_pm to TRUE, you can edit which commands for private messages should be blocked here
 mute_cmd:
   - 'me'
   - 'say'
@@ -45,7 +45,7 @@ mute_cmd:
   - 'ehelpop'
   - 'p msg'
 
-# Ustawienia reakcji na ilość otrzymanych ostrzeżeń
+# Settings for reactions to the number of received warnings
 WarnActions:
   3: "kick {player} You have received your 3rd warning!"
   4: "ban {player} 30m You have received your 4th warning!"
