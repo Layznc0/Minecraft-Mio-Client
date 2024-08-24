@@ -2,6 +2,7 @@ package pl.syntaxdevteam.basic
 
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
@@ -61,17 +62,16 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                 val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(remainingTime.toString())
                 val reason = punishment.reason
                 event.isCancelled = true
-                val muteMessage = plugin.messageHandler.getComplexMessage("mute", "mute_info_message", mapOf("reason" to reason, "time" to duration))
-                muteMessage.forEach { line ->
-                    player.sendMessage(line)
-                }
+                val muteMessage = plugin.messageHandler.getMessage("mute", "mute_info_message", mapOf("reason" to reason, "time" to duration))
+                val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
+                player.sendMessage(formattedMessage)
+
             } else {
                 plugin.databaseHandler.removePunishment(uuid, punishment.type)
                 plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
             }
         }
     }
-
 
     @EventHandler
     fun onPlayerCommand(event: PlayerCommandPreprocessEvent) {
@@ -90,10 +90,10 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                         val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(remainingTime.toString())
                         val reason = punishment.reason
                         event.isCancelled = true
-                        val muteMessage = plugin.messageHandler.getComplexMessage("mute", "mute_message", mapOf("reason" to reason, "time" to duration))
-                        muteMessage.forEach { line ->
-                            player.sendMessage(line)
-                        }
+                        val muteMessage = plugin.messageHandler.getMessage("mute", "mute_message", mapOf("reason" to reason, "time" to duration))
+                        val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
+                        player.sendMessage(formattedMessage)
+
                     } else {
                         plugin.databaseHandler.removePunishment(uuid, punishment.type)
                         plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")

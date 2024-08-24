@@ -66,11 +66,10 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
             val formattedMessage = placeholders.entries.fold(message) { acc, entry ->
                 acc.replace("{${entry.key}}", entry.value)
             }
-            val prefixedMessage = "$prefix $formattedMessage"
-            if (prefixedMessage.contains("<")) {
-                MiniMessage.miniMessage().deserialize(prefixedMessage)
+            if (formattedMessage.contains("<")) {
+                MiniMessage.miniMessage().deserialize(formattedMessage)
             } else {
-                LegacyComponentSerializer.legacyAmpersand().deserialize(prefixedMessage)
+                LegacyComponentSerializer.legacyAmpersand().deserialize(formattedMessage)
             }
         }
     }

@@ -1,7 +1,9 @@
+prefix: "<gradient:#2400ff:#5555ff:#55adff:#000caa>[<b>PunisherX</b>]</gradient>"
+
 error:
-  no_permission: "Nie masz uprawnień do tej komendy."
+  no_permission: "<red>Nie masz uprawnień do tej komendy.</red>"
   player_not_found: "Nie znaleziono gracza o nicku {player}."
-  reload: "Wystąpił błąd podczas przełądowania konfiguracji: "
+  reload: "<red>Wystąpił błąd podczas przełądowania konfiguracji:</red> "
 
 ban:
   ban: "Zbanowałeś {player} za {reason} na czas {time}"
@@ -40,7 +42,7 @@ banip:
   broadcast: "Gracz {player} został zbanowany z powodu {reason} na czas {time}"
   no_reasons: "bez powodu"
   reasons:
-    - "Oszystwo"
+    - "Multikonto"
     - "Griefing"
     - "Spamowanie"
     - "Wulgarny język"
@@ -53,10 +55,8 @@ unban:
 mute:
   mute: "Wyciszyłeś gracza {player} za {reason} na czas {time}"
   usage: "Poprawne użycie to: /mute <player> (time) <reason>"
-  mute_message:
-    - "Zostałeś/aś wyciszony/a za {reason} na czas {time}"
-  mute_info_message:
-    - "Próbujesz coś powiedzieć ale zostałeś/aś wyciszony/a"
+  mute_message: "Zostałeś/aś wyciszony/a za {reason} na czas {time}"
+  mute_info_message: "Próbujesz coś powiedzieć ale zostałeś/aś wyciszony/a"
   broadcast: "Gracz {player} został wyciszony za {reason} na czas {time}"
   no_reasons: "bez powodu"
   reasons:
@@ -72,4 +72,9 @@ unmute:
 
 warn:
   warn: Ostrzegłeś {player} za {reason} na czas {time}
-  usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
+  usage: "Poprawne użycie to: /warn <player> (czas) <powód>"
+  warn_message: "Dostałeś/aś ostrzeżenie {warn_no}/{warn_max}"
+
+unwarn:
+  unwarn: "Usunąłeś ostrzeżenie dla gracza {player}"
+  usage: "Poprawne użycie to: /warn <player>"

@@ -3,7 +3,8 @@ package pl.syntaxdevteam.commands
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import pl.syntaxdevteam.PunisherX
 import pl.syntaxdevteam.helpers.Logger
@@ -22,17 +23,18 @@ class UnMuteCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Ba
         if (args.isNotEmpty()) {
             if (stack.sender.hasPermission("punisherx.unmute")) {
                 val player = args[0]
-                val uuid = uuidManager.getUUID(player).toString()
+                val uuid = uuidManager.getUUID(player)
                 val punishmentType = "MUTE"
-                val punishment = plugin.databaseHandler.getPunishment(uuid)
+                val punishment = uuid?.let { plugin.databaseHandler.getPunishment(it) }
                 logger.debug("Punishment for UUID: [$punishment]")
                 if (punishment != null) {
                     if (punishment.type == "MUTE"){
                         plugin.databaseHandler.removePunishment(uuid, punishmentType)
-                        stack.sender.sendRichMessage(messageHandler.getMessage("mute", "unmute", mapOf("player" to uuid)))
-                        val message =
-                            Component.text(messageHandler.getMessage("mute", "unmute_broadcast", mapOf("player" to player)))
-                        plugin.server.broadcast(message)
+                        stack.sender.sendRichMessage(messageHandler.getMessage("unmute", "unmute", mapOf("player" to player)))
+                        val targetPlayer = Bukkit.getPlayer(player)
+                        val muteMessage = messageHandler.getMessage("unmute", "unmute_message")
+                        val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
+                        targetPlayer?.sendMessage(formattedMessage)
                         logger.info("Player $player ($uuid) has been unmuted")
                     }
                 }

@@ -3,7 +3,7 @@ package pl.syntaxdevteam.commands
 import io.papermc.paper.command.brigadier.BasicCommand
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.plugin.configuration.PluginMeta
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.jetbrains.annotations.NotNull
 import pl.syntaxdevteam.PunisherX
@@ -45,16 +45,13 @@ class MuteCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
 
                     stack.sender.sendRichMessage(messageHandler.getMessage("mute", "mute", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
-                    val message = Component.text(messageHandler.getMessage("mute", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
+                    val targetPlayer = Bukkit.getPlayer(player)
+                    val muteMessage = messageHandler.getMessage("mute", "mute_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))
+                    val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
+                    targetPlayer?.sendMessage(formattedMessage)
+                    val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("mute", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
                     logger.info("Player $player ($uuid) has been muted for $reason to time " + timeHandler.formatTime(gtime))
-
-                    // Notify the player immediately if they are online
-                    val targetPlayer = Bukkit.getPlayer(uuid)
-                    val muteMessage = plugin.messageHandler.getComplexMessage("mute", "mute_message", mapOf("reason" to reason, "time" to endText))
-                    muteMessage.forEach { line ->
-                        targetPlayer?.sendMessage(line)
-                    }
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
