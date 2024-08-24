@@ -1,20 +1,23 @@
+prefix: "<gradient:#2400ff:#5555ff:#55adff:#000caa>[<b>PunisherX</b>]</gradient>"
+
 error:
-  no_permission: "You do not have permission to use this command."
-  player_not_found: "Player with nickname {player} not found."
-  reload: "An error occurred while reloading the configuration: "
+  no_permission: "<red>You do not have permission to use this command.</red>"
+  player_not_found: "<gold>Player with the nickname {player} not found.</gold>"
+  reload: "<red>An error occurred while reloading the configuration:</red> "
+
 ban:
-  ban: "You have banned {player} for {reason} for {time}"
-  usage: "Correct usage is: /ban <player> (time) <reason>"
+  ban: "You banned {player} for {reason} for {time}"
+  usage: "Correct usage is: <gold>/ban <player> (time) <reason>"
   kick_message:
     - 'Server Name'
     - 'PunisherX &8» &7You have been banned'
     - '&7'
     - '&7'
     - "&cReason &8» &7{reason}"
-    - "&cDuration &8» &7{time}"
+    - "&cFor &8» &7{time}"
     - '&7'
     - '&8You can appeal at:'
-    - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+    - "&eDiscord &8» &c&nhttps://yourserver.com/discord"
   broadcast: "Player {player} has been banned for {reason} for {time}"
   no_reasons: "no reason"
   reasons:
@@ -22,30 +25,63 @@ ban:
     - "Griefing"
     - "Spamming"
     - "Offensive language"
+
 banip:
-  ban: "Your IP has been banned for {reason} for {time}"
-  usage: "Correct usage is: /banip <player> (time) <reason>"
+  ban: "You banned the player's IP for {reason} for {time}"
+  usage: "Correct usage is: <gold>/banip <player/ip> (time) <reason>"
   kick_message:
     - 'Server Name'
     - 'PunisherX &8» &7Your IP has been banned!'
     - '&7'
     - '&7'
     - "&cReason &8» &7{reason}"
-    - "&cDuration &8» &7{time}"
+    - "&cFor &8» &7{time}"
     - '&7'
     - '&8You can appeal at:'
-    - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+    - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.com/discord"
   broadcast: "Player {player} has been banned for {reason} for {time}"
   no_reasons: "no reason"
   reasons:
-    - "Cheating"
+    - "Multiple accounts"
     - "Griefing"
     - "Spamming"
     - "Offensive language"
+
 unban:
   unban: "Player {player} has been unbanned"
-  usage: "Correct usage is: /unban <player>"
+  usage: "Correct usage is: <gold>/unban <player>"
   broadcast: "Player {player} has been unbanned"
+
+mute:
+  mute: "You muted {player} for {reason} for {time}"
+  usage: "Correct usage is: <gold>/mute <player> (time) <reason>"
+  mute_message: "<red>You have been muted for <b>{reason}</b> for <b>{time}</b></red>"
+  mute_info_message: "You are trying to speak but you have been muted"
+  broadcast: "Player {player} has been muted for {reason} for {time}"
+  no_reasons: "no reason"
+  reasons:
+    - "Advertising"
+    - "Spamming"
+    - "Player insult"
+    - "Offensive language"
+
+unmute:
+  unmute: "You unmuted {player}"
+  usage: "Correct usage is: /unmute <player>"
+  unmute_message: "You have been unmuted!"
+
 warn:
-  warn: "You have warned {player} for {reason} for {time}"
-  usage: "Correct usage is: /warn <player> (time) <reason>"
+  warn: "You warned ({warn_no} time) {player} for {reason} for {time}"
+  usage: "Correct usage is: <gold>/warn <player> (time) <reason>"
+  warn_message: "<red>You have received <b>{warn_no}</b> warning!</red>"
+  broadcast: "Player {player} has been warned for {reason} for {time}"
+  no_reasons: "no reason"
+  reasons:
+    - "Advertising"
+    - "Spamming"
+    - "Player insult"
+    - "Offensive language"
+
+unwarn:
+  unwarn: "You removed the warning for {player}"
+  usage: "Correct usage is: <gold>/unwarn <player>"
