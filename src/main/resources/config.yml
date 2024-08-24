@@ -9,10 +9,11 @@ database:
     dbname: "my_database"
     username: "user"
     password: "password"
-# Plugin language selection. Possible values: "PL", "EN"
-language: "PL"
 
-# Czy prywatne wiadomości też mają być blokowane przy MUTE?
+# Plugin language selection. Possible values: "EN", "PL"
+language: "EN"
+
+# Czy prywatne wiadomości rónież mają być blokowane przy karze MUTE?
 mute_pm: false
 
 # Jeśli zaznaczyłeś mute_pm na TRUE to tu możesz edytować jakie komendy dla prywatnych wiadomości mają być blokowane
@@ -43,6 +44,15 @@ mute_cmd:
   - 'eamsg'
   - 'ehelpop'
   - 'p msg'
+
+# Ustawienia reakcji na ilość otrzymanych ostrzeżeń
+WarnActions:
+  3: "kick {player} You have received your 3rd warning!"
+  4: "ban {player} 30m You have received your 4th warning!"
+  5: "ban {player} 5h You have received your 5th warning!"
+  6: "ban {player} 7d You have received your 6th warning!"
+  7: "ban {player} 30d You have received your {warn_no}th warning!"
+  10: "ban {player} You have received your 10th warning!"
 
 # Update check and auto-update settings
 checkForUpdates: true

@@ -2,12 +2,12 @@ prefix: "<gradient:#2400ff:#5555ff:#55adff:#000caa>[<b>PunisherX</b>]</gradient>
 
 error:
   no_permission: "<red>Nie masz uprawnień do tej komendy.</red>"
-  player_not_found: "Nie znaleziono gracza o nicku {player}."
+  player_not_found: "<gold>Nie znaleziono gracza o nicku {player}.</gold>"
   reload: "<red>Wystąpił błąd podczas przełądowania konfiguracji:</red> "
 
 ban:
   ban: "Zbanowałeś {player} za {reason} na czas {time}"
-  usage: "Poprawne użycie to: /ban <player> (czas) <powód>"
+  usage: "Poprawne użycie to: <gold>/ban <player> (czas) <powód>"
   kick_message:
     - 'Nazwa serwera'
     - 'PunisherX &8» &7Zostałeś/aś zbanowany/a'
@@ -17,7 +17,7 @@ ban:
     - "&cNa czas &8» &7{time}"
     - '&7'
     - '&8Możesz zgłosić swój sprzeciw na:'
-    - "&eDiscord &8» &c&nhttps://SyntaxDevTeam.pl/discord"
+    - "&eDiscord &8» &c&nhttps://nazwaserwera.pl/discord"
   broadcast: "Gracz {player} został zbanowany z powodu {reason} na czas {time}"
   no_reasons: "bez powodu"
   reasons:
@@ -28,7 +28,7 @@ ban:
 
 banip:
   ban: "Zbanowałeś IP gracza za {reason} na czas {time}"
-  usage: "Poprawne użycie to: /banip <player> (czas) <powód>"
+  usage: "Poprawne użycie to: <gold>/banip <player/ip> (czas) <powód>"
   kick_message:
     - 'Nazwa serwera'
     - 'PunisherX &8» &7Twoje IP zostało zbanowane!'
@@ -49,13 +49,13 @@ banip:
 
 unban:
   unban: "Gracz {player} został odbanowany"
-  usage: "Poprawne użycie to: /unban <player>"
+  usage: "Poprawne użycie to: <gold>/unban <player>"
   broadcast: "Gracz {player} został odbanowany"
 
 mute:
   mute: "Wyciszyłeś gracza {player} za {reason} na czas {time}"
-  usage: "Poprawne użycie to: /mute <player> (time) <reason>"
-  mute_message: "Zostałeś/aś wyciszony/a za {reason} na czas {time}"
+  usage: "Poprawne użycie to: <gold>/mute <player> (time) <reason>"
+  mute_message: "<red>Zostałeś/aś wyciszony/a za <b>{reason}</b> na czas <b>{time}</b></red>"
   mute_info_message: "Próbujesz coś powiedzieć ale zostałeś/aś wyciszony/a"
   broadcast: "Gracz {player} został wyciszony za {reason} na czas {time}"
   no_reasons: "bez powodu"
@@ -71,10 +71,17 @@ unmute:
   unmute_message: "Zostałeś/aś odwyciszony/a!"
 
 warn:
-  warn: Ostrzegłeś {player} za {reason} na czas {time}
-  usage: "Poprawne użycie to: /warn <player> (czas) <powód>"
-  warn_message: "Dostałeś/aś ostrzeżenie {warn_no}/{warn_max}"
+  warn: Ostrzegłeś ({warn_no} raz) {player} za {reason} na czas {time}
+  usage: "Poprawne użycie to: <gold>/warn <player> (czas) <powód>"
+  warn_message: "<red>Dostałeś/aś <b>{warn_no}</b> ostrzeżenie!</red>"
+  broadcast: "Gracz {player} otrzymał ostrzeżenie za {reason} na czas {time}"
+  no_reasons: "bez powodu"
+  reasons:
+    - "Reklama"
+    - "Spam"
+    - "Obraza gracza"
+    - "Wulgarny język"
 
 unwarn:
   unwarn: "Usunąłeś ostrzeżenie dla gracza {player}"
-  usage: "Poprawne użycie to: /warn <player>"
+  usage: "Poprawne użycie to: <gold>/warn <player>"
