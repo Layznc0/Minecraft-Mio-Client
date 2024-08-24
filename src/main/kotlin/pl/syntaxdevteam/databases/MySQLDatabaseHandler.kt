@@ -18,9 +18,9 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
     override fun openConnection() {
         try {
             connection = DriverManager.getConnection(url, user, password)
-            plugin.logger.debug("Connection to the database established.")
+            plugin.logger.debug("Connection to the MySQL database established.")
         } catch (e: SQLException) {
-            plugin.logger.err("Failed to establish connection to the database. ${e.message}")
+            plugin.logger.err("Failed to establish connection to the MySQL database. ${e.message}")
         }
     }
 
@@ -140,61 +140,64 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
         }
     }
 
-    override fun getPunishment(uuid: String): PunishmentData? {
+    override fun getPunishments(uuid: String): List<PunishmentData> {
         if (!isConnected()) {
             openConnection()
         }
 
-        val statement: Statement? = connection?.createStatement()
-        plugin.logger.debug("Executing SQL query for UUID: $uuid")
-        val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$uuid'")
-        return if (resultSet != null && resultSet.next()) {
-            val type = resultSet.getString("punishmentType")
-            val reason = resultSet.getString("reason")
-            val start = resultSet.getLong("start")
-            val end = resultSet.getLong("end")
-            val punishment = PunishmentData(uuid, type, reason, start, end)
-            if (plugin.punishmentManager.isPunishmentActive(punishment)) {
-                plugin.logger.debug("Punishment found for UUID: $uuid, type: $type, reason: $reason, start: $start, end: $end")
-                punishment
-            } else {
-                plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
-                removePunishment(uuid, type)
-                null
+        val query = "SELECT * FROM punishments WHERE uuid = ?"
+        val punishments = mutableListOf<PunishmentData>()
+        try {
+            val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
+            preparedStatement.setString(1, uuid)
+            val resultSet: ResultSet = preparedStatement.executeQuery()
+            while (resultSet.next()) {
+                val type = resultSet.getString("punishmentType")
+                val reason = resultSet.getString("reason")
+                val start = resultSet.getLong("start")
+                val end = resultSet.getLong("end")
+                val punishment = PunishmentData(uuid, type, reason, start, end)
+                if (plugin.punishmentManager.isPunishmentActive(punishment)) {
+                    punishments.add(punishment)
+                } else {
+                    removePunishment(uuid, type)
+                }
             }
-        } else {
-            plugin.logger.debug("No punishment found for UUID: $uuid")
-            null
+        } catch (e: SQLException) {
+            plugin.logger.err("Failed to get punishments for UUID: $uuid. ${e.message}")
         }
+        return punishments
     }
 
-    override fun getPunishmentByIP(ip: String): PunishmentData? {
+    override fun getPunishmentsByIP(ip: String): List<PunishmentData> {
         if (!isConnected()) {
             openConnection()
         }
 
-        val statement: Statement? = connection?.createStatement()
-        plugin.logger.debug("Executing SQL query for IP: $ip")
-        val resultSet: ResultSet? = statement?.executeQuery("SELECT * FROM punishments WHERE uuid = '$ip'")
-        return if (resultSet != null && resultSet.next()) {
-            val type = resultSet.getString("punishmentType")
-            val reason = resultSet.getString("reason")
-            val start = resultSet.getLong("start")
-            val end = resultSet.getLong("end")
-            val punishment = PunishmentData(ip, type, reason, start, end)
-            if (plugin.punishmentManager.isPunishmentActive(punishment)) {
-                plugin.logger.debug("Punishment found for IP: $ip, type: $type, reason: $reason, start: $start, end: $end")
-                punishment
-            } else {
-                plugin.logger.debug("Punishment for IP: $ip has expired and has been removed")
-                removePunishment(ip, type)
-                null
+        val query = "SELECT * FROM punishments WHERE uuid = ?"
+        val punishments = mutableListOf<PunishmentData>()
+        try {
+            val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
+            preparedStatement.setString(1, ip)
+            val resultSet: ResultSet = preparedStatement.executeQuery()
+            while (resultSet.next()) {
+                val type = resultSet.getString("punishmentType")
+                val reason = resultSet.getString("reason")
+                val start = resultSet.getLong("start")
+                val end = resultSet.getLong("end")
+                val punishment = PunishmentData(ip, type, reason, start, end)
+                if (plugin.punishmentManager.isPunishmentActive(punishment)) {
+                    punishments.add(punishment)
+                } else {
+                    removePunishment(ip, type)
+                }
             }
-        } else {
-            plugin.logger.debug("No punishment found for IP: $ip")
-            null
+        } catch (e: SQLException) {
+            plugin.logger.err("Failed to get punishments for IP: $ip. ${e.message}")
         }
+        return punishments
     }
+
 
     override fun removePunishment(uuidOrIp: String, punishmentType: String) {
         if (!isConnected()) {
@@ -222,4 +225,25 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             plugin.logger.warning("Failed to reconnect to the database.")
         }
     }
+    override fun getWarnCount(uuid: String): Int {
+        if (!isConnected()) {
+            openConnection()
+        }
+
+        val query = "SELECT COUNT(*) AS warn_count FROM punishments WHERE uuid = ? AND punishmentType = 'WARN'"
+        try {
+            val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
+            preparedStatement.setString(1, uuid)
+            val resultSet: ResultSet = preparedStatement.executeQuery()
+            return if (resultSet.next()) {
+                resultSet.getInt("warn_count")
+            } else {
+                0
+            }
+        } catch (e: SQLException) {
+            plugin.logger.err("Failed to get warn count for UUID: $uuid. ${e.message}")
+            return 0
+        }
+    }
+
 }
