@@ -19,22 +19,30 @@ class UnWarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Ba
 
     override fun execute(@NotNull stack: CommandSourceStack, @NotNull args: Array<String>) {
         if (args.isNotEmpty()) {
-            if (stack.sender.hasPermission("punisherx.unmute")) {
+            if (stack.sender.hasPermission("punisherx.unwarn")) {
                 val player = args[0]
                 val uuid = uuidManager.getUUID(player)
-                val punishmentType = "WARN"
-                val punishment = uuid?.let { plugin.databaseHandler.getPunishment(it) }
-                logger.debug("Punishment for UUID: [$punishment]")
-                if (punishment != null) {
-                    if (punishment.type == "WARN"){
-                        plugin.databaseHandler.removePunishment(uuid, punishmentType)
+                if (uuid != null) {
+                    val punishments = plugin.databaseHandler.getPunishments(uuid)
+                    if (punishments.isNotEmpty()) {
+                        punishments.forEach { punishment ->
+                            if (punishment.type == "WARN") {
+                                plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                            }
+                        }
                         stack.sender.sendRichMessage(messageHandler.getMessage("unwarn", "unwarn", mapOf("player" to player)))
-                        logger.info("Player $player ($uuid) has been unmuted")
+                        logger.info("Player $player ($uuid) has been unwarned")
+                    } else {
+                        stack.sender.sendRichMessage(messageHandler.getMessage("error", "player_not_found", mapOf("player" to player)))
                     }
+                } else {
+                    stack.sender.sendRichMessage(messageHandler.getMessage("error", "player_not_found", mapOf("player" to player)))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
             }
+        } else {
+            stack.sender.sendRichMessage(messageHandler.getMessage("unwarn", "usage"))
         }
     }
 }

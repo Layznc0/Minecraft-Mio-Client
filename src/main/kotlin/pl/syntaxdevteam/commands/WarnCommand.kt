@@ -36,7 +36,7 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                     }
                     val gtime = if (args.size > 2) args[1] else null
                     val reason = if (args.size > 2) args.slice(2 until args.size).joinToString(" ") else args[1]
-                    val punishmentType = "MUTE"
+                    val punishmentType = "WARN"
                     val start = System.currentTimeMillis()
                     val end: Long? = if (gtime != null) (System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
                     val endText = if (end == null) timeHandler.formatTime(null) else timeHandler.formatTime((end / 1000).toString())
@@ -44,14 +44,16 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
 
-                    stack.sender.sendRichMessage(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
+                    val warnCount = plugin.databaseHandler.getWarnCount(uuid)
+                    stack.sender.sendRichMessage(messageHandler.getMessage("warn", "warn", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime), "warn_no" to warnCount.toString())))
                     val targetPlayer = Bukkit.getPlayer(player)
-                    val muteMessage = messageHandler.getMessage("warn", "warn_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime)))
-                    val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
+                    val warnMessage = messageHandler.getMessage("warn", "warn_message", mapOf("reason" to reason, "time" to timeHandler.formatTime(gtime), "warn_no" to warnCount.toString()))
+                    val formattedMessage = MiniMessage.miniMessage().deserialize(warnMessage)
                     targetPlayer?.sendMessage(formattedMessage)
-                    val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("warn", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
-                    plugin.server.broadcast(message)
+                    val broadcastMessage = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("warn", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime), "warn_no" to warnCount.toString())))
+                    plugin.server.broadcast(broadcastMessage)
                     logger.info("Player $player ($uuid) has been warned for $reason to time " + timeHandler.formatTime(gtime))
+                    executeWarnAction(player, warnCount)
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
@@ -80,4 +82,20 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
         }
         return suggestions
     }
+
+    private fun executeWarnAction(player: String, warnCount: Int) {
+        val warnActions = plugin.config.getConfigurationSection("WarnActions")?.getKeys(false)
+        warnActions?.forEach { key ->
+            val warnThreshold = key.toIntOrNull()
+            if (warnThreshold != null && warnCount == warnThreshold) {
+                val command = plugin.config.getString("WarnActions.$key")
+                if (command != null) {
+                    val formattedCommand = command.replace("{player}", player).replace("{warn_no}", warnCount.toString())
+                    plugin.server.dispatchCommand(plugin.server.consoleSender, formattedCommand)
+                    plugin.logger.debug("Executed command for $player: $formattedCommand")
+                }
+            }
+        }
+    }
+
 }

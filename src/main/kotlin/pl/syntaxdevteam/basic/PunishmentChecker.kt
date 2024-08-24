@@ -19,8 +19,8 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
         val uuid = event.uniqueId.toString()
         val ip = event.address.hostAddress
 
-        val punishment = plugin.databaseHandler.getPunishment(uuid) ?: plugin.databaseHandler.getPunishmentByIP(ip)
-        if (punishment != null) {
+        val punishments = plugin.databaseHandler.getPunishments(uuid) + plugin.databaseHandler.getPunishmentsByIP(ip)
+        punishments.forEach { punishment ->
             if (plugin.punishmentManager.isPunishmentActive(punishment)) {
                 if (punishment.type == "BAN" || punishment.type == "BANIP") {
                     val endTime = punishment.end
@@ -48,15 +48,14 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
         }
     }
 
-
     @EventHandler
     fun onPlayerChat(event: AsyncChatEvent) {
         val player = event.player
         val uuid = player.uniqueId.toString()
 
-        val punishment = plugin.databaseHandler.getPunishment(uuid)
-        if (punishment != null) {
-            if(punishment.type == "MUTE" && plugin.punishmentManager.isPunishmentActive(punishment)) {
+        val punishments = plugin.databaseHandler.getPunishments(uuid)
+        punishments.forEach { punishment ->
+            if (punishment.type == "MUTE" && plugin.punishmentManager.isPunishmentActive(punishment)) {
                 val endTime = punishment.end
                 val remainingTime = (endTime - System.currentTimeMillis()) / 1000
                 val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(remainingTime.toString())
@@ -65,7 +64,6 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                 val muteMessage = plugin.messageHandler.getMessage("mute", "mute_info_message", mapOf("reason" to reason, "time" to duration))
                 val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
                 player.sendMessage(formattedMessage)
-
             } else {
                 plugin.databaseHandler.removePunishment(uuid, punishment.type)
                 plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
@@ -82,9 +80,9 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
         if (plugin.config.getBoolean("mute_pm")) {
             val muteCommands = plugin.config.getStringList("mute_cmd")
             if (muteCommands.contains(command)) {
-                val punishment = plugin.databaseHandler.getPunishment(uuid)
-                if (punishment != null) {
-                    if(punishment.type == "MUTE" && plugin.punishmentManager.isPunishmentActive(punishment)) {
+                val punishments = plugin.databaseHandler.getPunishments(uuid)
+                punishments.forEach { punishment ->
+                    if (punishment.type == "MUTE" && plugin.punishmentManager.isPunishmentActive(punishment)) {
                         val endTime = punishment.end
                         val remainingTime = (endTime - System.currentTimeMillis()) / 1000
                         val duration = if (endTime == -1L) "permanent" else plugin.timeHandler.formatTime(remainingTime.toString())
@@ -93,7 +91,6 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                         val muteMessage = plugin.messageHandler.getMessage("mute", "mute_message", mapOf("reason" to reason, "time" to duration))
                         val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
                         player.sendMessage(formattedMessage)
-
                     } else {
                         plugin.databaseHandler.removePunishment(uuid, punishment.type)
                         plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
