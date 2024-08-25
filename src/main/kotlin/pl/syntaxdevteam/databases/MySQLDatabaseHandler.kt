@@ -225,6 +225,7 @@ class MySQLDatabaseHandler(private val plugin: PunisherX, config: FileConfigurat
             plugin.logger.warning("Failed to reconnect to the database.")
         }
     }
+
     override fun getWarnCount(uuid: String): Int {
         if (!isConnected()) {
             openConnection()

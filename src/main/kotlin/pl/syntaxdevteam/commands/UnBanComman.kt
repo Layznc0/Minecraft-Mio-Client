@@ -26,7 +26,9 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                     val punishments = plugin.databaseHandler.getPunishmentsByIP(playerOrIpOrUUID)
                     if (punishments.isNotEmpty()) {
                         punishments.forEach { punishment ->
-                            plugin.databaseHandler.removePunishment(playerOrIpOrUUID, punishment.type)
+                            if (punishment.type == "BANIP") {
+                                plugin.databaseHandler.removePunishment(playerOrIpOrUUID, punishment.type)
+                            }
                         }
                         stack.sender.sendRichMessage(messageHandler.getMessage("unban", "unban", mapOf("player" to playerOrIpOrUUID)))
                         val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("unban", "unban", mapOf("player" to playerOrIpOrUUID)))
@@ -42,7 +44,9 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                         val punishments = plugin.databaseHandler.getPunishments(uuid)
                         if (punishments.isNotEmpty()) {
                             punishments.forEach { punishment ->
-                                plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                                if (punishment.type == "BAN") {
+                                    plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                                }
                             }
                             stack.sender.sendRichMessage(messageHandler.getMessage("unban", "unban", mapOf("player" to playerOrIpOrUUID)))
                             val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("unban", "unban", mapOf("player" to playerOrIpOrUUID)))
@@ -55,7 +59,9 @@ class UnBanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Bas
                                 val punishmentsByIP = plugin.databaseHandler.getPunishmentsByIP(ip)
                                 if (punishmentsByIP.isNotEmpty()) {
                                     punishmentsByIP.forEach { punishment ->
-                                        plugin.databaseHandler.removePunishment(ip, punishment.type)
+                                        if (punishment.type == "BANIP") {
+                                            plugin.databaseHandler.removePunishment(ip, punishment.type)
+                                        }
                                     }
                                     stack.sender.sendRichMessage(messageHandler.getMessage("unban", "unban", mapOf("player" to playerOrIpOrUUID)))
                                     val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("unban", "unban"))
