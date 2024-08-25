@@ -28,7 +28,7 @@ ban:
 
 banip:
   ban: "Zbanowałeś IP gracza za {reason} na czas {time}"
-  usage: "Poprawne użycie to: <gold>/banip <player/ip> (czas) <powód>"
+  usage: "Poprawne użycie to: <gold>/banip <player|ip> (czas) <powód>"
   kick_message:
     - 'Nazwa serwera'
     - 'PunisherX &8» &7Twoje IP zostało zbanowane!'
@@ -85,3 +85,9 @@ warn:
 unwarn:
   unwarn: "Usunąłeś ostrzeżenie dla gracza {player}"
   usage: "Poprawne użycie to: <gold>/warn <player>"
+
+check:
+  usage: "Poprawne użycie to: <gold>/check <nazwa_gracza> <all|ban|mute|warn>"
+  invalid_type: "Nieprawidłowy typ kary. Użyj: all, ban, mute, warn."
+  no_punishments: "Gracz {player} nie ma żadnych kar."
+  punishment_info: "Typ: {type}, Powód: {reason}, Czas: {time}"

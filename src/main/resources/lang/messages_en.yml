@@ -85,3 +85,9 @@ warn:
 unwarn:
   unwarn: "You removed the warning for {player}"
   usage: "Correct usage is: <gold>/unwarn <player>"
+
+check:
+  usage: "Correct usage is: <gold>/check <player_name> <all|ban|mute|warn>"
+  invalid_type: "Invalid penalty type. Use: all, ban, mute, warn."
+  no_punishments: "Player {player} has no penalties."
+  punishment_info: "Type: {type}, Reason: {reason}, Time: {time}"
