@@ -20,15 +20,15 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("dev.folia:folia-api:1.20.6-R0.1-SNAPSHOT")
 
-    // MariaDB
     compileOnly("org.mariadb.jdbc:mariadb-java-client:3.3.2-SNAPSHOT")
-
-    // PostgreSQL
     compileOnly("org.postgresql:postgresql:42.7.3")
-
-    // Google API Client
     compileOnly("com.google.api-client:google-api-client-gson:2.6.0")
+
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
+    implementation("io.ktor:ktor-client-core:3.0.0-beta-2")
+    implementation("io.ktor:ktor-client-cio:3.0.0-beta-2")
 }
 
 val targetJavaVersion = 21

@@ -30,6 +30,7 @@ class PunisherX : JavaPlugin(), Listener {
     lateinit var timeHandler: TimeHandler
     lateinit var punishmentManager: PunishmentManager
     lateinit var playerIPManager: PlayerIPManager
+    private lateinit var updateChecker: UpdateChecker
 
     override fun onLoad() {
         logger = Logger(pluginMetas, debugMode)
@@ -51,6 +52,8 @@ class PunisherX : JavaPlugin(), Listener {
         }
         databaseHandler.openConnection()
         databaseHandler.createTables()
+        updateChecker = UpdateChecker(pluginMetas, logger, config)
+        updateChecker.checkForUpdates()
         messageHandler = MessageHandler(this, pluginMetas)
         playerIPManager = PlayerIPManager(this)
         timeHandler = TimeHandler(this.config.getString("language") ?: "PL")
