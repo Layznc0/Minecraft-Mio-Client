@@ -6,7 +6,7 @@ import java.net.URL
 
 data class PluginInfo(val name: String, val uuid: String, val prior: Int)
 
-@Suppress("UnstableApiUsage")
+@Suppress("UnstableApiUsage", "DEPRECATION")
 class PluginManager(private val plugin: JavaPlugin) {
 
     private val gson = Gson()
