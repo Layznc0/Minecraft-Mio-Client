@@ -11,6 +11,7 @@ import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import pl.syntaxdevteam.PunisherX
 
+@Suppress("DEPRECATION")
 class UUIDManager(private val plugin: PunisherX) {
     private val activeUUIDs: MutableMap<String, String> = HashMap()
 

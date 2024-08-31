@@ -35,7 +35,7 @@ class UpdateChecker(private val pluginMeta: PluginMeta, private val logger: Logg
                 val jsonObject = parser.parse(responseBody) as JSONObject
                 val versions = jsonObject["result"] as JSONArray
                 val latestVersion = versions.firstOrNull() as? JSONObject
-                if (latestVersion != null && latestVersion["name"] != pluginMeta.version) {
+                if (latestVersion != null && isNewerVersion(latestVersion["name"] as String, pluginMeta.version)) {
                     notifyUpdate(latestVersion)
                 }
             } else {
@@ -43,6 +43,31 @@ class UpdateChecker(private val pluginMeta: PluginMeta, private val logger: Logg
             }
             client.close()
         }
+    }
+
+    private fun isNewerVersion(latestVersion: String, currentVersion: String): Boolean {
+        val latestParts = latestVersion.split("-", limit = 2)
+        val currentParts = currentVersion.split("-", limit = 2)
+
+        val latestBase = latestParts[0].split(".")
+        val currentBase = currentParts[0].split(".")
+
+        for (i in latestBase.indices) {
+            val latestPart = latestBase.getOrNull(i)?.toIntOrNull() ?: 0
+            val currentPart = currentBase.getOrNull(i)?.toIntOrNull() ?: 0
+
+            if (latestPart > currentPart) {
+                return true
+            } else if (latestPart < currentPart) {
+                return false
+            }
+        }
+
+        if (latestParts.size > 1 && currentParts.size > 1) {
+            return latestParts[1] > currentParts[1]
+        }
+
+        return latestParts.size > currentParts.size
     }
 
     private fun notifyUpdate(version: JSONObject) {
@@ -60,7 +85,7 @@ class UpdateChecker(private val pluginMeta: PluginMeta, private val logger: Logg
 
     private fun notifyAdmins(message: Component) {
         for (player in Bukkit.getOnlinePlayers()) {
-            if (player.hasPermission("CleanerX.update.notify")) {
+            if (player.hasPermission("PunisherX.update.notify")) {
                 player.sendMessage(message)
             }
         }

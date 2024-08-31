@@ -78,10 +78,11 @@ class PunisherX : JavaPlugin(), Listener {
         val externalPlugins = pluginManager.fetchPluginsFromExternalSource("https://raw.githubusercontent.com/SyntaxDevTeam/plugins-list/main/plugins.json")
         val loadedPlugins = pluginManager.fetchLoadedPlugins()
         val highestPriorityPlugin = pluginManager.getHighestPriorityPlugin(externalPlugins, loadedPlugins)
-        if (highestPriorityPlugin == pluginMeta.name) {
-            val syntaxDevTeamPlugins = loadedPlugins.filter { it != pluginMeta.name }
+        if (highestPriorityPlugin == pluginMetas.name) {
+            val syntaxDevTeamPlugins = loadedPlugins.filter { it.first != pluginMetas.name }
             logger.pluginStart(syntaxDevTeamPlugins)
         }
+
         statsCollector = StatsCollector(this)
     }
 

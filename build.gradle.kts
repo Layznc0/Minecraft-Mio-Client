@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "pl.syntaxdevteam"
-version = "1.0-SNAPSHOT"
+version = "1.0-BETA-1"
 
 repositories {
     mavenCentral()
@@ -24,11 +24,12 @@ dependencies {
 
     compileOnly("org.mariadb.jdbc:mariadb-java-client:3.3.2-SNAPSHOT")
     compileOnly("org.postgresql:postgresql:42.7.3")
-    compileOnly("com.google.api-client:google-api-client-gson:2.6.0")
 
-    implementation("com.googlecode.json-simple:json-simple:1.1.1")
     implementation("io.ktor:ktor-client-core:3.0.0-beta-2")
     implementation("io.ktor:ktor-client-cio:3.0.0-beta-2")
+    implementation("io.ktor:ktor-client-content-negotiation:3.0.0-beta-2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0-beta-2")
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
 }
 
 val targetJavaVersion = 21

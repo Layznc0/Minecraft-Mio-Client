@@ -11,6 +11,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 @Suppress("UnstableApiUsage")
 class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
     private val plName = pluginMetas.name
+    private val plVer = pluginMetas.version
 
     private fun clear(s: String?) {
         Bukkit.getConsoleSender().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(s!!))
@@ -47,7 +48,7 @@ class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
         }
     }
 
-    fun pluginStart(pluginsByPriority: List<String>) {
+    fun pluginStart(pluginsByPriority: List<Pair<String, String>>) {
         clear("")
         clear("&9-------------------------------------------------------------------------------")
         clear("")
@@ -61,9 +62,9 @@ class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
         clear("&9          |___/                                                              ")
         clear("&9                                                                             ")
         clear("&9    ... is proud to present and enable:")
-        clear("&9                   &f * &f&l${plName}")
-        for (plugin in pluginsByPriority) {
-            clear("&9                   &f * $plugin")
+        clear("&9                   &f * &f&l${plName} v${plVer}")
+        for ((pluginName, pluginVersion) in pluginsByPriority) {
+            clear("&9                   &f * $pluginName v$pluginVersion")
         }
         clear("&9                 utilizing all the optimizations of your server engine!         ")
         clear("")
