@@ -45,7 +45,7 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
                     plugin.databaseHandler.addPunishment(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
                     plugin.databaseHandler.addPunishmentHistory(player, uuid, reason, stack.sender.name, punishmentType, start, end ?: -1)
 
-                    /*  TODO: Dodać jako awaryjna metoda w przypadku problemu z łacznością z bazą danych
+                    /*  TODO: Dodać BanList jako awaryjna metoda w przypadku problemu z łacznością z bazą danych
                         val playerProfile = Bukkit.createProfile(UUID.fromString(uuid), player)
                         val banList: BanList<PlayerProfile> = Bukkit.getBanList(BanListType.PROFILE)
                         val banEndDate = if (gtime != null) Date(System.currentTimeMillis() + timeHandler.parseTime(gtime) * 1000) else null
@@ -64,7 +64,6 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
                     stack.sender.sendRichMessage(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("ban", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.log(messageHandler.getLogMessage("ban", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
