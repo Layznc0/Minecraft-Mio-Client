@@ -5,7 +5,6 @@ import java.sql.DriverManager
 import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.ResultSet
-import java.sql.Statement
 import pl.syntaxdevteam.PunisherX
 import java.io.File
 
@@ -139,19 +138,31 @@ class SQLiteDatabaseHandler(private val plugin: PunisherX) : DatabaseHandler {
         }
     }
 
-    override fun removePunishment(uuidOrIp: String, punishmentType: String) {
+    override fun removePunishment(uuidOrIp: String, punishmentType: String, reason: String?) {
         if (!isConnected()) {
             openConnection()
         }
         if (isConnected()) {
-            val query = """
-        DELETE FROM `punishments` 
-        WHERE `uuid` = ? AND `punishmentType` = ?
-    """.trimIndent()
+            val query = if (reason != null) {
+                """
+            DELETE FROM `punishments` 
+            WHERE `uuid` = ? AND `punishmentType` = ? AND `reason` = ?
+            LIMIT 1
+            """.trimIndent()
+            } else {
+                """
+            DELETE FROM `punishments` 
+            WHERE `uuid` = ? AND `punishmentType` = ?
+            LIMIT 1
+            """.trimIndent()
+            }
             try {
                 val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
                 preparedStatement.setString(1, uuidOrIp)
                 preparedStatement.setString(2, punishmentType)
+                if (reason != null) {
+                    preparedStatement.setString(3, reason)
+                }
                 val rowsAffected = preparedStatement.executeUpdate()
                 if (rowsAffected > 0) {
                     plugin.logger.debug("Punishment of type $punishmentType for UUID/IP: $uuidOrIp removed from the database.")
