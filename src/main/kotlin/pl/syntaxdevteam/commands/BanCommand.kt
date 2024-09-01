@@ -64,7 +64,7 @@ class BanCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basic
                     stack.sender.sendRichMessage(messageHandler.getMessage("ban", "ban", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("ban", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.info("Player $player ($uuid) has banned for $reason to time " + timeHandler.formatTime(gtime))
+                    logger.log(messageHandler.getLogMessage("ban", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))

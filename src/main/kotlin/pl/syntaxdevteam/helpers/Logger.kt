@@ -6,7 +6,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-
+import net.kyori.adventure.text.minimessage.MiniMessage
 
 @Suppress("UnstableApiUsage")
 class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
@@ -38,7 +38,9 @@ class Logger(pluginMetas: PluginMeta, private val debugMode: Boolean) {
     }
 
     fun log(s: String) {
-        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] $s"))
+        val miniMessage = MiniMessage.miniMessage()
+        val component = miniMessage.deserialize(s)
+        Bukkit.getConsoleSender().sendMessage(Component.text("[$plName] ").append(component))
     }
 
     fun debug(s: String) {

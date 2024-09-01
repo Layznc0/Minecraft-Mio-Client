@@ -51,7 +51,7 @@ class MuteCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                     targetPlayer?.sendMessage(formattedMessage)
                     val message = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("mute", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                     plugin.server.broadcast(message)
-                    logger.info("Player $player ($uuid) has been muted for $reason to time " + timeHandler.formatTime(gtime))
+                    logger.log(messageHandler.getLogMessage("mute", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime))))
                 }
             } else {
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))

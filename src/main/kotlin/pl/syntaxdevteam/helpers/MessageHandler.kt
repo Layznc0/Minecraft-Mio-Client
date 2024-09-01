@@ -55,8 +55,18 @@ class MessageHandler(private val plugin: JavaPlugin, pluginMetas: PluginMeta) {
         return "$prefix $formattedMessage"
     }
 
+    fun getLogMessage(category: String, key: String, placeholders: Map<String, String> = emptyMap()): String {
+        val message = messages.getString("$category.$key") ?: run {
+            logger.err("There was an error loading the message $key from category $category")
+            "Message not found. Check console..."
+        }
+        val formattedMessage = placeholders.entries.fold(message) { acc, entry ->
+            acc.replace("{${entry.key}}", entry.value)
+        }
+        return formattedMessage
+    }
+
     fun getComplexMessage(category: String, key: String, placeholders: Map<String, String> = emptyMap()): List<Component> {
-        val prefix = getPrefix()
         val messageList = messages.getStringList("$category.$key")
         if (messageList.isEmpty()) {
             logger.err("There was an error loading the message list $key from category $category")

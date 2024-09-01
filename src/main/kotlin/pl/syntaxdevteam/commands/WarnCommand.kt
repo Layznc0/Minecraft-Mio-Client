@@ -52,7 +52,7 @@ class WarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Basi
                     targetPlayer?.sendMessage(formattedMessage)
                     val broadcastMessage = MiniMessage.miniMessage().deserialize(messageHandler.getMessage("warn", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime), "warn_no" to warnCount.toString())))
                     plugin.server.broadcast(broadcastMessage)
-                    logger.info("Player $player ($uuid) has been warned for $reason to time " + timeHandler.formatTime(gtime))
+                    logger.log(messageHandler.getLogMessage("warn", "broadcast", mapOf("player" to player, "reason" to reason, "time" to timeHandler.formatTime(gtime), "warn_no" to warnCount.toString())))
                     executeWarnAction(player, warnCount)
                 }
             } else {
