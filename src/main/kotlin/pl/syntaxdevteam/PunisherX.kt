@@ -17,6 +17,17 @@ import pl.syntaxdevteam.helpers.*
 import pl.syntaxdevteam.players.PlayerIPManager
 import java.util.*
 
+/* TODO:
+    * Dodać uprawnienia bypass dla poszczególnych komend
+    * Dodać pominięcie sprawdzania uprawnień punisherx.check jeśli osobą sprawdzaną jest ta sama, którą użyła komendy
+    * Sprawdzić działanie pernamentnych wersji wszystkich komend
+    * Dodać komendę kick z obsługą wiadomości w pliku językowym
+    * Dodać BanList dla komend ban i banip jako awaryjna metoda w przypadku problemu z łącznością z bazą danych
+    * Dodać możliwość użycia wyłącznie BanList zamiast obsługi baz danych do ustawienia w config.yml
+    * Sprawdzić wersję eksperymentalną pomysłu na dynamiczne przełączanie między bazą MySQL a SQLite w sytuacji problemu z łącznością.
+    * Dodać możliwość exportu i importu dla poszczególnych baz oraz migracji przędzy nimi
+*/
+
 @Suppress("UnstableApiUsage")
 class PunisherX : JavaPlugin(), Listener {
     lateinit var logger: Logger

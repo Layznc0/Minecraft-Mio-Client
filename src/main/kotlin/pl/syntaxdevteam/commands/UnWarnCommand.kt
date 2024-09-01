@@ -24,12 +24,9 @@ class UnWarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Ba
                 val uuid = uuidManager.getUUID(player)
                 if (uuid != null) {
                     val punishments = plugin.databaseHandler.getPunishments(uuid)
-                    if (punishments.isNotEmpty()) {
-                        punishments.forEach { punishment ->
-                            if (punishment.type == "WARN") {
-                                plugin.databaseHandler.removePunishment(uuid, punishment.type)
-                            }
-                        }
+                    val warnPunishments = punishments.filter { it.type == "WARN" }
+                    if (warnPunishments.isNotEmpty()) {
+                        plugin.databaseHandler.removePunishment(uuid, "WARN")
                         stack.sender.sendRichMessage(messageHandler.getMessage("unwarn", "unwarn", mapOf("player" to player)))
                         logger.info("Player $player ($uuid) has been unwarned")
                     } else {
@@ -42,7 +39,7 @@ class UnWarnCommand(private val plugin: PunisherX, pluginMetas: PluginMeta) : Ba
                 stack.sender.sendRichMessage(messageHandler.getMessage("error", "no_permission"))
             }
         } else {
-            stack.sender.sendRichMessage(messageHandler.getMessage("unwarn", "usage"))
+            stack.sender.sendRichMessage(messageHandler.getMessage("unwarn", "usage_unwarn"))
         }
     }
 }

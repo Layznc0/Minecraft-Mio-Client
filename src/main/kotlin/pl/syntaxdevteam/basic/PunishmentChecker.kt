@@ -42,7 +42,7 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                     plugin.logger.debug("Player ${event.name} was kicked for: $reason")
                 }
             } else {
-                plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                plugin.databaseHandler.removePunishment(uuid, punishment.type, true)
                 plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
             }
         }
@@ -65,7 +65,7 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                 val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
                 player.sendMessage(formattedMessage)
             } else {
-                plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                plugin.databaseHandler.removePunishment(uuid, punishment.type, true)
                 plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
             }
         }
@@ -92,7 +92,7 @@ class PunishmentChecker(private val plugin: PunisherX) : Listener {
                         val formattedMessage = MiniMessage.miniMessage().deserialize(muteMessage)
                         player.sendMessage(formattedMessage)
                     } else {
-                        plugin.databaseHandler.removePunishment(uuid, punishment.type)
+                        plugin.databaseHandler.removePunishment(uuid, punishment.type, true)
                         plugin.logger.debug("Punishment for UUID: $uuid has expired and has been removed")
                     }
                 }

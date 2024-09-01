@@ -138,21 +138,21 @@ class SQLiteDatabaseHandler(private val plugin: PunisherX) : DatabaseHandler {
         }
     }
 
-    override fun removePunishment(uuidOrIp: String, punishmentType: String, reason: String?) {
+    override fun removePunishment(uuidOrIp: String, punishmentType: String, removeAll: Boolean) {
         if (!isConnected()) {
             openConnection()
         }
         if (isConnected()) {
-            val query = if (reason != null) {
+            val query = if (removeAll) {
                 """
             DELETE FROM `punishments` 
-            WHERE `uuid` = ? AND `punishmentType` = ? AND `reason` = ?
-            LIMIT 1
+            WHERE `uuid` = ? AND `punishmentType` = ?
             """.trimIndent()
             } else {
                 """
             DELETE FROM `punishments` 
             WHERE `uuid` = ? AND `punishmentType` = ?
+            ORDER BY `start` DESC
             LIMIT 1
             """.trimIndent()
             }
@@ -160,9 +160,6 @@ class SQLiteDatabaseHandler(private val plugin: PunisherX) : DatabaseHandler {
                 val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
                 preparedStatement.setString(1, uuidOrIp)
                 preparedStatement.setString(2, punishmentType)
-                if (reason != null) {
-                    preparedStatement.setString(3, reason)
-                }
                 val rowsAffected = preparedStatement.executeUpdate()
                 if (rowsAffected > 0) {
                     plugin.logger.debug("Punishment of type $punishmentType for UUID/IP: $uuidOrIp removed from the database.")
@@ -235,24 +232,30 @@ class SQLiteDatabaseHandler(private val plugin: PunisherX) : DatabaseHandler {
         return punishments
     }
 
-    override fun getWarnCount(uuid: String): Int {
+    override fun getActiveWarnCount(uuid: String): Int {
         if (!isConnected()) {
             openConnection()
         }
 
-        val query = "SELECT COUNT(*) AS warn_count FROM punishments WHERE uuid = ? AND punishmentType = 'WARN'"
+        val query = "SELECT * FROM punishments WHERE uuid = ? AND punishmentType = 'WARN'"
+        val punishments = mutableListOf<PunishmentData>()
         try {
             val preparedStatement: PreparedStatement = connection!!.prepareStatement(query)
             preparedStatement.setString(1, uuid)
             val resultSet: ResultSet = preparedStatement.executeQuery()
-            return if (resultSet.next()) {
-                resultSet.getInt("warn_count")
-            } else {
-                0
+            while (resultSet.next()) {
+                val type = resultSet.getString("punishmentType")
+                val reason = resultSet.getString("reason")
+                val start = resultSet.getLong("start")
+                val end = resultSet.getLong("end")
+                val punishment = PunishmentData(uuid, type, reason, start, end)
+                if (plugin.punishmentManager.isPunishmentActive(punishment)) {
+                    punishments.add(punishment)
+                }
             }
         } catch (e: SQLException) {
-            plugin.logger.err("Failed to get warn count for UUID: $uuid. ${e.message}")
-            return 0
+            plugin.logger.err("Failed to get active warn count for UUID: $uuid. ${e.message}")
         }
+        return punishments.size
     }
 }
